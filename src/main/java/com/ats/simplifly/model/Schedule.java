@@ -13,7 +13,7 @@ public class Schedule {
     private int id;
     @ManyToOne
     private Flight flight;
-    @Column(name = "departure_time")
+    @Column(name = "departure_time", nullable = false)
     private LocalTime departureTime;
     private LocalTime arrivalTime;
     private double fare;

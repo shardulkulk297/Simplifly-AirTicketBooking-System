@@ -14,6 +14,7 @@ public class BookingSeat {
     private Passenger passenger;
     @ManyToOne
     private Seats seat;
+    @Column(nullable = false)
     private double price;
 
     public int getId() {

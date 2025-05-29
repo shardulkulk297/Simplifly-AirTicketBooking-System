@@ -15,7 +15,7 @@ public class Payment {
     @ManyToOne
     private Booking booking;
     private double amount;
-    @Column(name = "payment_method")
+    @Column(name = "payment_method", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private LocalTime paymentTime;

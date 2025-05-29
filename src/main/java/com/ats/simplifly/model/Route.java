@@ -8,7 +8,7 @@ public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
+    @Column(nullable = false)
     private String origin;
     private String destination;
     private String duration;

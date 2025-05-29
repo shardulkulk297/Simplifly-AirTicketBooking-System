@@ -12,7 +12,7 @@ public class Passenger {
     private int id;
     @ManyToOne
     private Customer customer;
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String fullName;
     @Column(name = "dob")
     private LocalDate dateOfBirth;

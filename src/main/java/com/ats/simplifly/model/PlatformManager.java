@@ -8,9 +8,20 @@ public class PlatformManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String fullName;
     private String email;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public int getId() {
         return id;

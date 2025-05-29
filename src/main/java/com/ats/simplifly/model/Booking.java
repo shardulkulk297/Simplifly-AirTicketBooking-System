@@ -9,13 +9,18 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne
     private Customer customer;
+
     @ManyToOne
     private Schedule schedule;
-    @Column(name = "total_amount")
+
+    @Column(name = "total_amount", nullable = false)
     private double totalAmount;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus;
 
     public int getId() {

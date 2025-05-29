@@ -13,7 +13,7 @@ public class Seats {
     private int id;
     @ManyToOne
     private Schedule schedule;
-    @Column(name = "class_type")
+    @Column(name = "class_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private SeatClassType seatClassType;
     @Enumerated(EnumType.STRING)

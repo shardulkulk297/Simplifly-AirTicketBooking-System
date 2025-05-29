@@ -13,10 +13,13 @@ public class Flight {
     private FlightOwner owner;
     @ManyToOne
     private Route route;
-    @Column(name = "flight_number")
+    @Column(name = "flight_number", nullable = false)
     private String flightNumber;
+    @Column(nullable = false)
     private int baggageCheckin;
+    @Column(nullable = false)
     private int baggageCabin;
+    @Column(nullable = false)
     private int totalSeats;
 
     public int getId() {

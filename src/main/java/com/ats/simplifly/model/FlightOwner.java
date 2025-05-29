@@ -9,12 +9,23 @@ public class FlightOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "company_name")
+    @Column(name = "company_name", nullable = false)
     private String companyName;
     private String email;
     private String contactPhone;
     @Enumerated(EnumType.STRING)
     private DocumentStatus documentStatus;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public int getId() {
         return id;
