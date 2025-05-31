@@ -65,4 +65,9 @@ public class FlightOwnerService {
         }
         return flightOwnerRepository.save(toUpdate);
     }
+
+    public void deleteOwner(int id){
+        flightOwnerRepository.deleteById(id);
+    }
+
 }

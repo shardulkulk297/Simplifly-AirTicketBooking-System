@@ -7,10 +7,7 @@ import com.ats.simplifly.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -34,12 +31,18 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.getCustomer(username));
     }
 
-    @PostMapping("/api/customer/editProfile")
+    @PutMapping("/api/customer/editProfile")
     public ResponseEntity<?> editProfile(@RequestBody Customer customer, Principal principal){
         String username = principal.getName();
         User user = new User();
         user.setUsername(username);
         customer.setUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.editProfile(customer));
+    }
+
+    @DeleteMapping("/api/customer/delete/{customerId}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable int customerId){
+        customerService.deleteCustomer(customerId);
+
     }
 }

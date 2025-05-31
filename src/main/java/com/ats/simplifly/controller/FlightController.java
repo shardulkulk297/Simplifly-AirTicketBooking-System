@@ -6,19 +6,18 @@ import com.ats.simplifly.service.FlightService;
 import com.ats.simplifly.service.RouteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 public class FlightController {
 
-    private final FlightService flightService;
-    private final RouteService routeService;
+    private FlightService flightService;
 
-    public FlightController(FlightService flightService, RouteService routeService) {
+
+    public FlightController(FlightService flightService) {
         this.flightService = flightService;
-        this.routeService = routeService;
     }
 
     @PostMapping("/api/flight/add")
@@ -26,9 +25,31 @@ public class FlightController {
         return ResponseEntity.status(HttpStatus.CREATED).body(flightService.addFlight(flight));
     }
 
-    @PostMapping("/api/flight/route/add")
-    public ResponseEntity<?> addRoute(@RequestBody Route route){
-        return ResponseEntity.status(HttpStatus.CREATED).body(routeService.addRoute(route));
+    @GetMapping("/api/flight/getAll")
+    public ResponseEntity<?> getAllFlights(Principal principal){
+
+        String username = principal.getName();
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getAllFlights(username));
     }
+
+    @GetMapping("/api/flight/getById/{flightId}")
+    public ResponseEntity<?> getFlightById(int flightId){
+        return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getFlight(flightId));
+    }
+
+    @PutMapping("/api/flight/update")
+    public ResponseEntity<?> updateFlight(@RequestBody Flight flight, Principal principal){
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.updateFlight(flight,principal.getName()));
+    }
+
+    @DeleteMapping("/api/flight/delete/{flightId}")
+    public ResponseEntity<?> deleteFlight(@PathVariable int flightId){
+        flightService.deleteFlight(flightId);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully");
+    }
+
+
+
 
 }
