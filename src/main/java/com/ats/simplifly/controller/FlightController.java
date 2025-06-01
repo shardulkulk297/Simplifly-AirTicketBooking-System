@@ -21,8 +21,9 @@ public class FlightController {
     }
 
     @PostMapping("/api/flight/add")
-    public ResponseEntity<?> addFlight(@RequestBody Flight flight){
-        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.addFlight(flight));
+    public ResponseEntity<?> addFlight(@RequestBody Flight flight, Principal principal){
+        String username = principal.getName();
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.addFlight(flight, username));
     }
 
     @GetMapping("/api/flight/getAll")
@@ -34,13 +35,13 @@ public class FlightController {
     }
 
     @GetMapping("/api/flight/getById/{flightId}")
-    public ResponseEntity<?> getFlightById(int flightId){
+    public ResponseEntity<?> getFlightById(@PathVariable int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getFlight(flightId));
     }
 
-    @PutMapping("/api/flight/update")
-    public ResponseEntity<?> updateFlight(@RequestBody Flight flight, Principal principal){
-        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.updateFlight(flight,principal.getName()));
+    @PutMapping("/api/flight/update/{flightId}")
+    public ResponseEntity<?> updateFlight(@RequestBody Flight flight, @PathVariable int flightId){
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.updateFlight(flight, flightId));
     }
 
     @DeleteMapping("/api/flight/delete/{flightId}")

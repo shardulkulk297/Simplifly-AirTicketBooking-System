@@ -11,6 +11,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     @Query("Select f from Flight f WHERE f.owner.id = ?1")
     List<Flight> getAllFlights(int id);
 
-    @Query("Select f from Flight f WHERE f.owner.user.username = ?1")
-    Flight getByOwner(String username);
+    @Query("Select f from Flight f WHERE f.flightNumber = ?1")
+    Flight findByFlightNumber(String flightNumber);
+
 }

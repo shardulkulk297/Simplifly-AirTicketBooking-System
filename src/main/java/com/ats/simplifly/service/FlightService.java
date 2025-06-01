@@ -7,6 +7,7 @@ import com.ats.simplifly.model.Route;
 import com.ats.simplifly.model.User;
 import com.ats.simplifly.repository.FlightOwnerRepository;
 import com.ats.simplifly.repository.FlightRepository;
+import com.ats.simplifly.repository.RouteRepository;
 import com.ats.simplifly.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,44 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final FlightOwnerRepository flightOwnerRepository;
     private final RouteService routeService;
+    private final RouteRepository routeRepository;
 
-    public FlightService(FlightRepository flightRepository, FlightOwnerRepository flightOwnerRepository, RouteService routeService) {
+    public FlightService(FlightRepository flightRepository, FlightOwnerRepository flightOwnerRepository, RouteService routeService, RouteRepository routeRepository) {
         this.flightRepository = flightRepository;
         this.flightOwnerRepository = flightOwnerRepository;
         this.routeService = routeService;
+        this.routeRepository = routeRepository;
     }
 
-    public Flight addFlight(Flight flight){
+    /*
+    To addFlight:
+    1. First Take owner by username and set it to flight
+    2. Get the route and check whether it exists or not.
+    3. If the route exists then take it and set it to the route.
+    4. If not add the route to DB.
+    5. Set the route to the flight
+    6. Save the flight
+     */
 
+    public Flight addFlight(Flight flight, String username){
+        FlightOwner flightOwner = flightOwnerRepository.getByUsername(username);
+        flight.setOwner(flightOwner);
+        Route route = flight.getRoute();
+        Route mainRoute = routeRepository.findByRoute(route.getOrigin(), route.getDestination());
+        if(mainRoute!=null)
+        {
+            route.setId(mainRoute.getId());
+        }
+        else{
+            route = routeRepository.save(route);
+        }
+        flight.setRoute(route);
         return flightRepository.save(flight);
     }
+
+    /*
+    WIll return the only flights that are created by logged in flight owner
+     */
 
     public List<Flight> getAllFlights(String username) {
         FlightOwner flightOwner = flightOwnerRepository.getByUsername(username);
@@ -42,9 +70,11 @@ public class FlightService {
         return flight;
     }
 
-    public Flight updateFlight(Flight flight, String username){
+    //Update the flight using id
 
-        Flight flightToUpdate = flightRepository.getByOwner(username);
+    public Flight updateFlight(Flight flight, int id){
+
+        Flight flightToUpdate = flightRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Flight Not found to update"));
 
         if(flight.getRoute()!=null){
             Route route = routeService.updateRoute(flight.getRoute(), flight.getRoute().getId());

@@ -22,14 +22,14 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.scheduleFlight(schedule));
     }
 
-    @PutMapping("/api/flight/schedule/update")
-    public ResponseEntity<?> updateSchedule(@RequestBody Schedule schedule, Principal principal){
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.updateSchedule(schedule, principal.getName()));
+    @PutMapping("/api/flight/schedule/update/{scheduleId}")
+    public ResponseEntity<?> updateSchedule(@RequestBody Schedule schedule, @PathVariable int scheduleId){
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.updateSchedule(schedule, scheduleId));
     }
 
     @GetMapping("/api/flight/schedule/getAll")
-    public ResponseEntity<?> getAllSchedules(){
-        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getAllSchedules());
+    public ResponseEntity<?> getAllSchedules(Principal principal){
+        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getAllSchedules(principal.getName()));
     }
 
     @GetMapping("/api/flight/schedule/getFlightSchedule/{flightId}")

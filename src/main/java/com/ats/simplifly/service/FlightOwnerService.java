@@ -24,6 +24,12 @@ public class FlightOwnerService {
         this.userService = userService;
     }
 
+    /*
+    1. First get the user
+    2. Set the role
+    3. Save the user
+    4. Save the Owner
+     */
     public FlightOwner addOwner(FlightOwner flightOwner){
         User user = flightOwner.getUser();
         user.setRole(Role.FLIGHTOWNER);

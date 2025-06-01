@@ -43,6 +43,7 @@ public class CustomerController {
     @DeleteMapping("/api/customer/delete/{customerId}")
     public ResponseEntity<?> deleteCustomer(@PathVariable int customerId){
         customerService.deleteCustomer(customerId);
+        return ResponseEntity.status(HttpStatus.OK).body("DELETED SUCCESSFULLY");
 
     }
 }
