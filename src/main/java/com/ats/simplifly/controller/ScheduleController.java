@@ -32,8 +32,8 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getAllSchedules(principal.getName()));
     }
 
-    @GetMapping("/api/flight/schedule/getFlightSchedule/{flightId}")
-    public ResponseEntity<?> getFlightSchedule(@PathVariable int flightId){
+    @GetMapping("/api/flight/schedule/getFlightSchedule")
+    public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getScheduleByFlight(flightId));
     }
 

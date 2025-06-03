@@ -37,4 +37,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
         }
     }
+
+    @GetMapping("/api/user/getLoggedInUserDetails")
+    public Object getLoggedInUser(Principal principal){
+
+        String username = principal.getName();
+        return userService.getLoggedInUserDetails(username);
+
+    }
 }

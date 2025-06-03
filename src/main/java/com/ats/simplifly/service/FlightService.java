@@ -65,6 +65,7 @@ public class FlightService {
         return flightRepository.getAllFlights(id);
     }
 
+
     public Flight getFlight(int id){
         Flight flight =  flightRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Flight Not found"));
         return flight;
@@ -103,6 +104,7 @@ public class FlightService {
     }
 
 
-
-
+    public List<Flight> getAllFlightsForSearch() {
+        return flightRepository.findAll();
+    }
 }

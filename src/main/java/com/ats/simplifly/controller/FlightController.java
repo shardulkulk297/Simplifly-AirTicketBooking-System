@@ -34,6 +34,11 @@ public class FlightController {
         return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getAllFlights(username));
     }
 
+    @GetMapping("/api/manager/flight/getAllFlights")
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getAllFlightsForSearch());
+    }
+
     @GetMapping("/api/flight/getById/{flightId}")
     public ResponseEntity<?> getFlightById(@PathVariable int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getFlight(flightId));
