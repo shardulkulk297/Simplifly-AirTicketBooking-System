@@ -8,7 +8,7 @@ import com.ats.simplifly.model.User;
 import com.ats.simplifly.repository.FlightOwnerRepository;
 import com.ats.simplifly.repository.FlightRepository;
 import com.ats.simplifly.repository.RouteRepository;
-import com.ats.simplifly.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -106,5 +106,9 @@ public class FlightService {
 
     public List<Flight> getAllFlightsForSearch() {
         return flightRepository.findAll();
+    }
+
+    public List<Flight> getFlightsByRoute(String origin, String destination) {
+        return flightRepository.getFlightsByRoute(origin, destination);
     }
 }

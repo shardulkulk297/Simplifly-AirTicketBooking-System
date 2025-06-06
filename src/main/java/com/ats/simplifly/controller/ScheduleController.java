@@ -27,16 +27,38 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.updateSchedule(schedule, scheduleId));
     }
 
+    /*
+    API: Will return the flights scheduled by loggedIn flightOwner
+    AUTH: FLIGHTOWNER
+     */
     @GetMapping("/api/flight/schedule/getAll")
     public ResponseEntity<?> getAllSchedules(Principal principal){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getAllSchedules(principal.getName()));
     }
+    /*
+    API: For Filter according to price of the flight and the route
+    SEARCH
+    AUTHORITY: ALL
+     */
 
+    @GetMapping("/api/flight/schedule/getFlightsByFareAndRoute")
+    public ResponseEntity<?> getFlightsByFareAndRoute(String origin, String destination, double fare){
+        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getFlightsByFareAndRoute(origin, destination, fare));
+    }
+    /*
+    API FOR: Detailed Schedule of the Flight
+    AUTHORITY: FLIGHTOWNER & MANAGER
+     */
     @GetMapping("/api/flight/schedule/getFlightSchedule")
     public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getScheduleByFlight(flightId));
     }
+    /*
+    API FOR: Showing all the schedules (Can only be called by manager)
+    AUTH: MANAGER
+     */
 
+    @GetMapping("/api")
     @DeleteMapping("/api/flight/schedule/delete/{scheduleId}")
     public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId){
         scheduleService.deleteSchedule(scheduleId);

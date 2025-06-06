@@ -13,7 +13,7 @@ public class BookingSeat {
     @ManyToOne
     private Passenger passenger;
     @ManyToOne
-    private Seats seat;
+    private Seat seat;
     @Column(nullable = false)
     private double price;
 
@@ -41,11 +41,11 @@ public class BookingSeat {
         this.passenger = passenger;
     }
 
-    public Seats getSeat() {
+    public Seat getSeat() {
         return seat;
     }
 
-    public void setSeat(Seats seat) {
+    public void setSeat(Seat seat) {
         this.seat = seat;
     }
 

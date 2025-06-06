@@ -7,7 +7,6 @@ import com.ats.simplifly.model.User;
 import com.ats.simplifly.model.enums.DocumentStatus;
 import com.ats.simplifly.model.enums.Role;
 import com.ats.simplifly.repository.FlightOwnerRepository;
-import com.ats.simplifly.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

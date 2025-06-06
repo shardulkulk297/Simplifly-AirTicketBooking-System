@@ -1,6 +1,7 @@
 package com.ats.simplifly.model;
 
 import com.ats.simplifly.model.enums.BookingStatus;
+import com.ats.simplifly.model.enums.SeatClassType;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +23,8 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus;
+
+
 
     public int getId() {
         return id;

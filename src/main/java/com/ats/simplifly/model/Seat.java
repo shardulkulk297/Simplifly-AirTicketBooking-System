@@ -5,12 +5,14 @@ import com.ats.simplifly.model.enums.SeatStatus;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "seats")
-public class Seats {
+@Table(name = "seat")
+public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
+    private String seatNumber;
     @ManyToOne
     private Schedule schedule;
     @Column(name = "class_type", nullable = false)
@@ -18,9 +20,26 @@ public class Seats {
     private SeatClassType seatClassType;
     @Enumerated(EnumType.STRING)
     private SeatStatus seatStatus;
+    private double price;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     public int getId() {
         return id;
+    }
+
+    public String getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(String seatNumber) {
+        this.seatNumber = seatNumber;
     }
 
     public void setId(int id) {

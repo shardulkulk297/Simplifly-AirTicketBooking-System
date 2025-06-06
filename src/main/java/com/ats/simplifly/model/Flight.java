@@ -15,12 +15,20 @@ public class Flight {
     private Route route;
     @Column(name = "flight_number", nullable = false)
     private String flightNumber;
-    @Column(nullable = false)
     private int baggageCheckin;
-    @Column(nullable = false)
     private int baggageCabin;
-    @Column(nullable = false)
     private int totalSeats;
+    private int seatsPerRow;
+    private int firstClassRows;
+    private int businessClassRows;
+
+    public int getBusinessClassRows() {
+        return businessClassRows;
+    }
+
+    public void setBusinessClassRows(int businessClassRows) {
+        this.businessClassRows = businessClassRows;
+    }
 
     public int getId() {
         return id;
@@ -77,4 +85,24 @@ public class Flight {
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
     }
+
+
+
+    public int getSeatsPerRow() {
+        return seatsPerRow;
+    }
+
+    public void setSeatsPerRow(int seatsPerRow) {
+        this.seatsPerRow = seatsPerRow;
+    }
+
+    public int getFirstClassRows() {
+        return firstClassRows;
+    }
+
+    public void setFirstClassRows(int firstClassRows) {
+        this.firstClassRows = firstClassRows;
+    }
+
+
 }

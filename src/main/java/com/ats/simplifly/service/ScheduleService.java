@@ -14,10 +14,12 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final FlightRepository flightRepository;
+    private final SeatService seatService;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, FlightRepository flightRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, FlightRepository flightRepository, SeatService seatService) {
         this.scheduleRepository = scheduleRepository;
         this.flightRepository = flightRepository;
+        this.seatService = seatService;
     }
 
     /*
@@ -28,10 +30,8 @@ public class ScheduleService {
        4. Add schedule
      */
     public Schedule scheduleFlight(Schedule schedule){
-
         Flight flight = schedule.getFlight();
         Flight checkIfFlightExists = flightRepository.findByFlightNumber(flight.getFlightNumber());
-
         if(checkIfFlightExists != null){
             flight.setId(checkIfFlightExists.getId());
             flight.setOwner(checkIfFlightExists.getOwner());
@@ -40,7 +40,9 @@ public class ScheduleService {
             throw new ResourceNotFoundException("You must add the flight before scheduling it");
         }
         schedule.setFlight(flight);
-        return scheduleRepository.save(schedule);
+        Schedule finalSchedule = scheduleRepository.save(schedule);
+        seatService.createSeats(schedule);
+        return finalSchedule;
     }
 
     //Updating schedule
@@ -76,13 +78,15 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(int scheduleId){
-
         if(scheduleRepository.findById(scheduleId) == null){
             throw new ResourceNotFoundException("Schedule Not found");
         }
-
+        seatService.deleteSeats(scheduleId);
         scheduleRepository.deleteById(scheduleId);
     }
 
 
+    public List<Flight> getFlightsByFareAndRoute(String origin, String destination, double fare) {
+        return scheduleRepository.getFlightsByFareAndRoute(origin, destination, fare);
+    }
 }
