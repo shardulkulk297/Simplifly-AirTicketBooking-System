@@ -1,16 +1,13 @@
 package com.ats.simplifly.service;
 
-import com.ats.simplifly.model.Booking;
+import org.springframework.stereotype.Service;
+
 import com.ats.simplifly.model.Flight;
 import com.ats.simplifly.model.Schedule;
 import com.ats.simplifly.model.Seat;
 import com.ats.simplifly.model.enums.SeatClassType;
 import com.ats.simplifly.model.enums.SeatStatus;
 import com.ats.simplifly.repository.SeatRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class SeatService {
@@ -30,22 +27,20 @@ public class SeatService {
 
         Flight flight = schedule.getFlight();
 
-        int firstClassRows = flight.getFirstClassRows();
-        int buisnessClassRows = flight.getBusinessClassRows();
-
         createFirstClassSeats(schedule, flight);
         createBusinessClassSeats(schedule, flight);
         createEconomyClassSeats(schedule, flight);
-
-
-
     }
 
     private void createFirstClassSeats(Schedule schedule, Flight flight) {
-        if(flight.getFirstClassRows()==0){
+        
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2); //2 Seats Per Row
+        if(flight.getFirstClassSeats()==0){
             return;
         }
-        for(int row=1; row<=flight.getFirstClassRows(); row++){
+        
+        int seatCount = 0;
+        for(int row=1; row<=firstClassRows && seatCount < flight.getFirstClassSeats(); row++){
             for(char seatLetter = 'A'; seatLetter<='B'; seatLetter++){
                 Seat seat = new Seat();
                 seat.setSeatStatus(SeatStatus.AVAILABLE);
@@ -61,14 +56,20 @@ public class SeatService {
 
     private void createBusinessClassSeats(Schedule schedule, Flight flight) {
 
-        if(flight.getBusinessClassRows() == 0){
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2);
+        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4); //4 seats per row
+
+
+        if(flight.getBusinessClassSeats() == 0){
             return;
         }
 
-        int start = flight.getFirstClassRows() + 1;
-        int end = start + flight.getBusinessClassRows() - 1;
+        
 
-        for(int row = start; row<=end; row++){
+        int start = firstClassRows + 1;
+        int end = start + bizRows - 1;
+        int seatCount = 0;
+        for(int row = start; row<=end && seatCount<flight.getBusinessClassSeats(); row++){
             for(char seatLetter = 'A'; seatLetter<='D'; seatLetter++){
                 Seat seat = new Seat();
                 seat.setSeatStatus(SeatStatus.AVAILABLE);
@@ -86,19 +87,23 @@ public class SeatService {
 
 
         int totalSeats = flight.getTotalSeats();
-        int firstClassSeats = flight.getFirstClassRows() * 2;
-        int businessClassSeats = flight.getBusinessClassRows() * 4;
+        int firstClassSeats = flight.getFirstClassSeats();
+        int businessClassSeats = flight.getBusinessClassSeats();
         int economySeats = totalSeats - (firstClassSeats + businessClassSeats);
+
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2);
+        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4);
+        int economyRows = (int) Math.ceil(economySeats / 6);
 
         if(economySeats <= 0 ){
             return;
         }
 
-
-        int start = flight.getFirstClassRows() + flight.getBusinessClassRows();
-        int economyRows = (int) Math.ceil(economySeats / 6.0);
-
-        for(int row = start; row<start + economyRows; row++){
+        int start = firstClassRows + bizRows + 1;
+        int end = start + economyRows;
+       
+        int seatCount = 0;
+        for(int row = start; row<end && seatCount<economySeats; row++){
             for(char seatLetter = 'A'; seatLetter<='F'; seatLetter++){
                 Seat seat = new Seat();
                 seat.setSeatStatus(SeatStatus.AVAILABLE);

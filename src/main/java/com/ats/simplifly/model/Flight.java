@@ -1,6 +1,12 @@
 package com.ats.simplifly.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "flight")
@@ -18,17 +24,8 @@ public class Flight {
     private int baggageCheckin;
     private int baggageCabin;
     private int totalSeats;
-    private int seatsPerRow;
-    private int firstClassRows;
-    private int businessClassRows;
-
-    public int getBusinessClassRows() {
-        return businessClassRows;
-    }
-
-    public void setBusinessClassRows(int businessClassRows) {
-        this.businessClassRows = businessClassRows;
-    }
+    private int firstClassSeats;
+    private int businessClassSeats;
 
     public int getId() {
         return id;
@@ -87,21 +84,20 @@ public class Flight {
     }
 
 
-
-    public int getSeatsPerRow() {
-        return seatsPerRow;
+    public int getFirstClassSeats() {
+        return firstClassSeats;
     }
 
-    public void setSeatsPerRow(int seatsPerRow) {
-        this.seatsPerRow = seatsPerRow;
+    public void setFirstClassSeats(int firstClassSeats) {
+        this.firstClassSeats = firstClassSeats;
     }
 
-    public int getFirstClassRows() {
-        return firstClassRows;
+    public int getBusinessClassSeats() {
+        return businessClassSeats;
     }
 
-    public void setFirstClassRows(int firstClassRows) {
-        this.firstClassRows = firstClassRows;
+    public void setBusinessClassSeats(int businessClassSeats) {
+        this.businessClassSeats = businessClassSeats;
     }
 
 

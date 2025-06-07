@@ -25,7 +25,6 @@ public class Booking {
     private BookingStatus bookingStatus;
 
 
-
     public int getId() {
         return id;
     }
