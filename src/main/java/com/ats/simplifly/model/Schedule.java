@@ -2,6 +2,8 @@ package com.ats.simplifly.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -14,9 +16,25 @@ public class Schedule {
     @ManyToOne
     private Flight flight;
     @Column(name = "departure_time", nullable = false)
-    private LocalTime departureTime;
-    private LocalTime arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
     private double fare;
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
 
     public int getId() {
         return id;
@@ -34,21 +52,7 @@ public class Schedule {
         this.flight = flight;
     }
 
-    public LocalTime getDepartureTime() {
-        return departureTime;
-    }
 
-    public void setDepartureTime(LocalTime departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public LocalTime getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(LocalTime arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
 
     public double getFare() {
         return fare;

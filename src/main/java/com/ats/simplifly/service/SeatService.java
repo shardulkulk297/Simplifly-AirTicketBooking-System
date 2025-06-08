@@ -9,6 +9,8 @@ import com.ats.simplifly.model.enums.SeatClassType;
 import com.ats.simplifly.model.enums.SeatStatus;
 import com.ats.simplifly.repository.SeatRepository;
 
+import java.util.List;
+
 @Service
 public class SeatService {
 
@@ -118,5 +120,42 @@ public class SeatService {
 
     public void deleteSeats(int scheduleId) {
         seatRepository.deleteSeatsBySchedule(scheduleId);
+    }
+
+    public double calculateTotalPrice(Schedule schedule, List<String> seatNumbers) {
+        double totalAmount = 0;
+
+        for(String seatNumber: seatNumbers)
+        {
+            double price = seatRepository.getSeatPrice(schedule,seatNumber);
+            totalAmount = totalAmount + price;
+        }
+        return totalAmount;
+
+    }
+
+    public void holdSeats(Schedule schedule, List<String> seatNumbers) {
+
+        for(String seatNumber: seatNumbers){
+            Seat seat = seatRepository.getBySeatNumber(seatNumber);
+            seat.setSeatStatus(SeatStatus.HOLD);
+            seatRepository.save(seat);
+        }
+
+    }
+
+    public boolean checkAvailableTickets(Schedule schedule, int noOfTickets) {
+        int tickets = seatRepository.checkAvailableTickets(schedule, SeatStatus.AVAILABLE);
+        return tickets == noOfTickets;
+    }
+
+    public void flipStatus(Schedule schedule) {
+        List<Seat> seats = seatRepository.getBySchedule(schedule.getId());
+
+        for(Seat seat: seats){
+            seat.setSeatStatus(SeatStatus.AVAILABLE);
+            seatRepository.save(seat);
+        }
+
     }
 }

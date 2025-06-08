@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 public class ScheduleController {
@@ -49,6 +51,11 @@ public class ScheduleController {
     API FOR: Detailed Schedule of the Flight
     AUTHORITY: FLIGHTOWNER & MANAGER
      */
+
+    @GetMapping("/api/flight/schedule/search")
+    public ResponseEntity<?> getFlightsSearch(String origin, String destination, LocalDateTime date){
+        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getFlightSearch(origin, destination, date));
+    }
     @GetMapping("/api/flight/schedule/getFlightSchedule")
     public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getScheduleByFlight(flightId));

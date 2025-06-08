@@ -1,6 +1,7 @@
 package com.ats.simplifly;
 
 import com.ats.simplifly.exception.ResourceNotFoundException;
+import com.ats.simplifly.exception.SeatsNotAvailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,7 +22,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(exception =ResourceNotFoundException.class)
-    public ResponseEntity<?> ResourceNotFoundExceptionHandler(RuntimeException e){
+    public ResponseEntity<?> ResourceNotFoundExceptionHandler(ResourceNotFoundException e){
+        Map<String, String> map = new HashMap<>();
+        map.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
+    }
+
+    @ExceptionHandler(exception = SeatsNotAvailableException.class)
+    public ResponseEntity<?> SeatsNotAvailableExceptionHandler(SeatsNotAvailableException e){
         Map<String, String> map = new HashMap<>();
         map.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);

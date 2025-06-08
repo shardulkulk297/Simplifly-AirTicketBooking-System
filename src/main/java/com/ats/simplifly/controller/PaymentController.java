@@ -22,8 +22,8 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/api/payments/add")
-    public Payment makePayment(@RequestBody Payment payment){
-        return paymentService.makePayment(payment);
-    }
+//    @PostMapping("/api/payments/add")
+//    public  makePayment(@RequestBody Payment payment){
+//        return paymentService.makePayment(payment);
+//    }
 }

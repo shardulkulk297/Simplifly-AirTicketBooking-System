@@ -1,13 +1,16 @@
 package com.ats.simplifly.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.ats.simplifly.exception.ResourceNotFoundException;
 import com.ats.simplifly.model.Flight;
 import com.ats.simplifly.model.Schedule;
 import com.ats.simplifly.repository.FlightRepository;
 import com.ats.simplifly.repository.ScheduleRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ScheduleService {
@@ -88,5 +91,10 @@ public class ScheduleService {
 
     public List<Flight> getFlightsByFareAndRoute(String origin, String destination, double fare) {
         return scheduleRepository.getFlightsByFareAndRoute(origin, destination, fare);
+    }
+
+    public List<Schedule> getFlightSearch(String origin, String destination, LocalDateTime date) {
+
+        return scheduleRepository.searchFlight(origin, destination, date);
     }
 }
