@@ -33,9 +33,7 @@ public class PassengerService {
 
     public Passenger addPassenger(Passenger passenger, String username){
         Customer customer = customerRepository.getByUsername(username);
-        Customer main = passenger.getCustomer();
-        main.setId(customer.getId());
-        passenger.setCustomer(main);
+        passenger.setCustomer(customer);
         return passengerRepository.save(passenger);
     }
 
@@ -61,7 +59,7 @@ public class PassengerService {
             if (seat == null) {
                 throw new ResourceNotFoundException("Seat " + seatNumber + " not found for schedule " + schedule.getId());
             }
-            if (seat.getSeatStatus() != SeatStatus.AVAILABLE) {
+            if (seat.getSeatStatus() != SeatStatus.HOLD) {
                 throw new SeatsNotAvailableException("Seat " + seatNumber + " is not available");
             }
 

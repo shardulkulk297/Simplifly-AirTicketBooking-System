@@ -56,8 +56,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/flight/schedule/getFlightSchedule").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
                         .requestMatchers("/api/flight/schedule/getAll").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
                         /*
-                        Delete API'S
+                        Booking API'S
                          */
+                        .requestMatchers("/api/booking/book").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/passenger/add").hasAuthority("CUSTOMER")
+                         /*
+                         DELETE API's
+                          */
                         .requestMatchers("/api/flightOwner/deleteAccount").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
                         .requestMatchers("/api/customer/delete/{customerId}").hasAnyAuthority("CUSTOMER", "MANAGER")
                         .anyRequest().authenticated()

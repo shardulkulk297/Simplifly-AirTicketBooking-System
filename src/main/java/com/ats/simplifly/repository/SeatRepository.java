@@ -18,12 +18,14 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     List<Seat> getBySchedule(int id);
 
     @Query("Select count(s.schedule.id) from Seat s WHERE s.schedule.id = ?1 AND s.seatStatus = ?2")
-    int checkAvailableTickets(Schedule schedule, SeatStatus seatStatus);
+    int checkAvailableTickets(int scheduleId, SeatStatus seatStatus);
 
     @Query("Select s.price from Seat s WHERE s.schedule.id = ?1 AND s.seatNumber = ?2")
-    double getSeatPrice(Schedule schedule, String seatNumber);
+    double getSeatPrice(int scheduleId, String seatNumber);
 
 
-    @Query("Select s from Seat s WHERE s.seatNumber = ?1")
-    Seat getBySeatNumber(String seatNumber);
+    @Query("Select s from Seat s WHERE s.seatNumber = ?1 AND s.schedule.id = ?2")
+    Seat getBySeatNumber(String seatNumber, int scheduleId);
+
+
 }

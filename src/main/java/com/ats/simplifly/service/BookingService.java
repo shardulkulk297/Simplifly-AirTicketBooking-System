@@ -47,7 +47,9 @@ public class BookingService {
     public BookingDto bookTickets(BookingRequestDto bookingRequestDto, String username){
         Booking booking = new Booking();
         Schedule schedule = scheduleRepository.findById(bookingRequestDto.getSchedule().getId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
-        booking.setSchedule(bookingRequestDto.getSchedule());
+        booking.setSchedule(schedule);
+        Customer customer = customerRepository.getByUsername(username);
+        booking.setCustomer(customer);
         List<Passenger> passengers = bookingRequestDto.getPassengers();
         int noOfTickets = bookingRequestDto.getNoOfTickets();
         /*
@@ -70,6 +72,7 @@ public class BookingService {
             booking.setBookingStatus(BookingStatus.PENDING);
             booking.setCustomer(customerRepository.getByUsername(username));
             booking.setTotalAmount(totalAmount);
+            Booking savedBooking = bookingRepository.save(booking);
 
             /*
                For each passengerId & held seat, create BookingSeat
@@ -85,31 +88,50 @@ public class BookingService {
                 /*
                 On success: flip seats → BOOKED, Booking.status=CONFIRMED
                  */
-                booking.setBookingStatus(BookingStatus.CONFIRMED);
-               Booking bookingToSave = bookingRepository.save(booking);
+                savedBooking.setBookingStatus(BookingStatus.CONFIRMED);
+               Booking bookingToSend = bookingRepository.save(savedBooking);
+               /*
+               Setting seatStatus to confirmed
+                */
+               seatService.confirmSeats(bookingRequestDto.getSeatNumbers(), schedule);
                /*
                Setting DTO
                 */
                BookingDto bookingDto = new BookingDto();
-               bookingDto.setBooking(bookingToSave);
-               bookingDto.setBookingSeats(bookingSeats);
+               bookingDto.setBookedBy(username);
+               bookingDto.setBookingStatus(bookingToSend.getBookingStatus());
+               bookingDto.setArrivalTime(schedule.getArrivalTime());
+               bookingDto.setDepartureTime(schedule.getArrivalTime());
+               bookingDto.setFlightNumber(schedule.getFlight().getFlightNumber());
+               bookingDto.setRoute(schedule.getFlight().getRoute());
+               bookingDto.setPassengerNames(passengers);
+               bookingDto.setSeatNumbers(bookingRequestDto.getSeatNumbers());
+               bookingDto.setTotalPrice(bookingToSend.getTotalAmount());
                return bookingDto;
             } else if (status.equals(PaymentStatus.FAILED)){
                 /*
                 On fail: flip seats → AVAILABLE, Booking.status=CANCELLED
                  */
                 seatService.flipStatus(schedule);
-                booking.setBookingStatus(BookingStatus.CANCELLED);
+                savedBooking.setBookingStatus(BookingStatus.CANCELLED);
                 seatService.flipStatus(schedule);
-                Booking bookingToSave = bookingRepository.save(booking);
+                Booking bookingToSend = bookingRepository.save(savedBooking);
                /*
                Setting DTO
                 */
                 BookingDto bookingDto = new BookingDto();
-                bookingDto.setBooking(bookingToSave);
-                bookingDto.setBookingSeats(bookingSeats);
+                bookingDto.setBookedBy(username);
+                bookingDto.setBookingStatus(bookingToSend.getBookingStatus());
+                bookingDto.setArrivalTime(schedule.getArrivalTime());
+                bookingDto.setDepartureTime(schedule.getArrivalTime());
+                bookingDto.setFlightNumber(schedule.getFlight().getFlightNumber());
+                bookingDto.setRoute(schedule.getFlight().getRoute());
+                bookingDto.setPassengerNames(passengers);
+                bookingDto.setSeatNumbers(bookingRequestDto.getSeatNumbers());
+                bookingDto.setTotalPrice(bookingToSend.getTotalAmount());
                 return bookingDto;
             }
+
         }
         else{
             throw new SeatsNotAvailableException("Seats Are Not available");

@@ -127,7 +127,7 @@ public class SeatService {
 
         for(String seatNumber: seatNumbers)
         {
-            double price = seatRepository.getSeatPrice(schedule,seatNumber);
+            double price = seatRepository.getSeatPrice(schedule.getId(),seatNumber);
             totalAmount = totalAmount + price;
         }
         return totalAmount;
@@ -137,7 +137,7 @@ public class SeatService {
     public void holdSeats(Schedule schedule, List<String> seatNumbers) {
 
         for(String seatNumber: seatNumbers){
-            Seat seat = seatRepository.getBySeatNumber(seatNumber);
+            Seat seat = seatRepository.getBySeatNumber(seatNumber, schedule.getId());
             seat.setSeatStatus(SeatStatus.HOLD);
             seatRepository.save(seat);
         }
@@ -145,8 +145,11 @@ public class SeatService {
     }
 
     public boolean checkAvailableTickets(Schedule schedule, int noOfTickets) {
-        int tickets = seatRepository.checkAvailableTickets(schedule, SeatStatus.AVAILABLE);
-        return tickets == noOfTickets;
+        int tickets = seatRepository.checkAvailableTickets(schedule.getId(), SeatStatus.AVAILABLE);
+        if(tickets >= noOfTickets){
+            return true;
+        }
+        return false;
     }
 
     public void flipStatus(Schedule schedule) {
@@ -157,5 +160,13 @@ public class SeatService {
             seatRepository.save(seat);
         }
 
+    }
+
+    public void confirmSeats(List<String> seatNumbers, Schedule schedule) {
+        for(String seatNumber: seatNumbers){
+            Seat seat = seatRepository.getBySeatNumber(seatNumber, schedule.getId());
+            seat.setSeatStatus(SeatStatus.BOOKED);
+            seatRepository.save(seat);
+        }
     }
 }
