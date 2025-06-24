@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class FlightController {
 
     private FlightService flightService;
@@ -26,12 +27,11 @@ public class FlightController {
         return ResponseEntity.status(HttpStatus.CREATED).body(flightService.addFlight(flight, username));
     }
 
-    @GetMapping("/api/flight/getAll")
+    @GetMapping("/api/flight/getAllFlights")
     public ResponseEntity<?> getAllFlights(Principal principal){
 
         String username = principal.getName();
-
-        return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getAllFlights(username));
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.getAllFlights(username));
     }
 
     @GetMapping
@@ -39,7 +39,7 @@ public class FlightController {
         return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getFlightsByRoute(origin, destination));
     }
 
-    @GetMapping("/api/manager/flight/getAllFlights")
+    @GetMapping("/api/flight/getAll")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.status(HttpStatus.FOUND).body(flightService.getAllFlightsForSearch());
     }
@@ -58,6 +58,11 @@ public class FlightController {
     public ResponseEntity<?> deleteFlight(@PathVariable int flightId){
         flightService.deleteFlight(flightId);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully");
+    }
+
+    @GetMapping("/api/flight/getTotalFlights")
+    public ResponseEntity<?> getTotalFlights(){
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.getTotalFlights());
     }
 
 

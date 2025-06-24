@@ -6,6 +6,7 @@ import com.ats.simplifly.model.enums.SeatClassType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 @Component
 public class BookingDto {
@@ -16,8 +17,8 @@ public class BookingDto {
     private List<Passenger> passengerNames;
     private Route route;
     private String flightNumber;
-    private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
     private double totalPrice;
     private List<String> seatNumbers;
 
@@ -69,19 +70,19 @@ public class BookingDto {
         this.flightNumber = flightNumber;
     }
 
-    public LocalDateTime getDepartureTime() {
+    public LocalTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDateTime departureTime) {
+    public void setDepartureTime(LocalTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDateTime getArrivalTime() {
+    public LocalTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDateTime arrivalTime) {
+    public void setArrivalTime(LocalTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 

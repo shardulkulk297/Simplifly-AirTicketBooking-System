@@ -4,6 +4,7 @@ import com.ats.simplifly.model.Customer;
 import com.ats.simplifly.model.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,13 +21,17 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception{
-        http.csrf((csrf)->csrf.disable())
+        http
+                .csrf((csrf)->csrf.disable())
                 .authorizeHttpRequests(authorize->authorize
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/user/signup").permitAll()
                         .requestMatchers("/api/customer/add")
                         .permitAll()
                         .requestMatchers("/api/flightOwner/add").permitAll()
                         .requestMatchers("/api/manager/add").permitAll()
+                        .requestMatchers("/api/user/getToken").authenticated()
+                        .requestMatchers("/api/user/getLoggedInUserDetails").authenticated()
                         /*
                         FlightOwner API'S
                          */
@@ -47,19 +52,24 @@ public class SecurityConfig {
                         .requestMatchers("/api/flight/getById/{flightId}").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
                         .requestMatchers("/api/flight/update/{flightId}").hasAnyAuthority("FLIGHTOWNER")
                         .requestMatchers("/api/flight/delete/{flightId}").hasAnyAuthority("FLIGHTOWNER")
-                        .requestMatchers("/api/manager/flight/getAllFlights").hasAuthority("MANAGER")
+                        .requestMatchers("/api/flight/getAll").hasAnyAuthority("MANAGER", "CUSTOMER")
+                        .requestMatchers("/api/flight/getAllFlights").hasAuthority("FLIGHTOWNER")
+                        .requestMatchers("/api/flight/schedule/search").permitAll()
+                        .requestMatchers("/api/flight/route/getAll").authenticated()
                         /*
                         FLIGHT SCHEDULING API'S
                          */
                         .requestMatchers("/api/flight/schedule/add").hasAuthority("FLIGHTOWNER")
                         .requestMatchers("/api/flight/schedule/update/{scheduleId}").hasAuthority("FLIGHTOWNER")
+                        .requestMatchers("/api/flight/schedule/delete/{scheduleId}").hasAuthority("FLIGHTOWNER")
                         .requestMatchers("/api/flight/schedule/getFlightSchedule").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
-                        .requestMatchers("/api/flight/schedule/getAll").hasAnyAuthority("FLIGHTOWNER", "MANAGER")
+                        .requestMatchers("/api/flight/schedule/getAll").hasAuthority("FLIGHTOWNER")
                         /*
                         Booking API'S
                          */
                         .requestMatchers("/api/booking/book").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/passenger/add").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/booking/cancel").hasAuthority("CUSTOMER")
                          /*
                          DELETE API's
                           */

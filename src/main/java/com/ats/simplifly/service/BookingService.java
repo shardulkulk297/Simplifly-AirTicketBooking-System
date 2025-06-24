@@ -27,9 +27,11 @@ public class BookingService {
     private final PaymentService paymentService;
     private final BookingSeatRepository bookingSeatRepository;
     private final BookingSeatService bookingSeatService;
+    private final ScheduleService scheduleService;
+    private final FlightService flightService;
     private BookingRepository bookingRepository;
 
-    public BookingService(BookingRepository bookingRepository, SeatService seatService, SeatRepository seatRepository, ScheduleRepository scheduleRepository, PassengerRepository passengerRepository, PassengerService passengerService, CustomerRepository customerRepository, PaymentService paymentService, BookingSeatRepository bookingSeatRepository, BookingSeatService bookingSeatService) {
+    public BookingService(BookingRepository bookingRepository, SeatService seatService, SeatRepository seatRepository, ScheduleRepository scheduleRepository, PassengerRepository passengerRepository, PassengerService passengerService, CustomerRepository customerRepository, PaymentService paymentService, BookingSeatRepository bookingSeatRepository, BookingSeatService bookingSeatService, ScheduleService scheduleService, FlightService flightService) {
         this.bookingRepository = bookingRepository;
         this.seatService = seatService;
         this.seatRepository = seatRepository;
@@ -40,18 +42,38 @@ public class BookingService {
         this.paymentService = paymentService;
         this.bookingSeatRepository = bookingSeatRepository;
         this.bookingSeatService = bookingSeatService;
+        this.scheduleService = scheduleService;
+        this.flightService = flightService;
     }
 
 
 
     public BookingDto bookTickets(BookingRequestDto bookingRequestDto, String username){
+        /*
+        Creating Booking POJO
+         */
         Booking booking = new Booking();
+        /*
+        Getting Schedule of flight
+         */
         Schedule schedule = scheduleRepository.findById(bookingRequestDto.getSchedule().getId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
+        /*
+        Setting Schedule
+         */
         booking.setSchedule(schedule);
+        /*
+        Getting Customer by Username
+         */
         Customer customer = customerRepository.getByUsername(username);
+        if(customer==null){
+            throw new ResourceNotFoundException("Customer Not found");
+        }
         booking.setCustomer(customer);
         List<Passenger> passengers = bookingRequestDto.getPassengers();
         int noOfTickets = bookingRequestDto.getNoOfTickets();
+        for(Passenger p: passengers){
+            p.setCustomer(customer);
+        }
         /*
             Validate availability (Seat.status=AVAILABLE)
          */
@@ -66,6 +88,11 @@ public class BookingService {
             Calculate the total amount of booking
              */
             double totalAmount = seatService.calculateTotalPrice(schedule, bookingRequestDto.getSeatNumbers());
+
+            if(totalAmount == 0){
+                throw new RuntimeException("SOMETHING WENT WRONG WITH SEAT NUMBERS");
+            }
+
             /*
                 Create Booking (status=PENDING, noOfTickets)
              */
@@ -94,6 +121,12 @@ public class BookingService {
                Setting seatStatus to confirmed
                 */
                seatService.confirmSeats(bookingRequestDto.getSeatNumbers(), schedule);
+                /*
+                Update total Seats amount
+                 */
+                Flight flight = schedule.getFlight();
+                flight.setTotalSeats(flight.getTotalSeats() - bookingRequestDto.getNoOfTickets());
+                flightService.updateFlight(flight, flight.getId());
                /*
                Setting DTO
                 */
@@ -134,9 +167,22 @@ public class BookingService {
 
         }
         else{
-            throw new SeatsNotAvailableException("Seats Are Not available");
+            throw new SeatsNotAvailableException("Sorry but seats are not available");
         }
 
         return null;
     }
+
+//    public BookingDto cancelBooking(BookingRequestDto bookingRequestDto, String username){
+//        /*
+//        Creating Booking POJO
+//         */
+//        Booking booking = new Booking();
+//
+//        Schedule schedule = scheduleRepository.findById(bookingRequestDto.getSchedule().getId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
+//        List<String> seatNumbers = bookingRequestDto.getSeatNumbers();
+//        List<Passenger> passengers = bookingRequestDto.getPassengers();
+//        Customer customer = customerRepository.getByUsername(username);
+//
+//    }
 }

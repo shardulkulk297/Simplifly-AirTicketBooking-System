@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class RouteController {
     private final RouteService routeService;
 
@@ -26,7 +27,7 @@ public class RouteController {
 
     @GetMapping("/api/flight/route/getAll")
     public ResponseEntity<?> getAllRoutes(){
-        return ResponseEntity.status(HttpStatus.FOUND).body(routeService.getAllRoutes());
+        return ResponseEntity.status(HttpStatus.OK).body(routeService.getAllRoutes());
     }
 
     @GetMapping("/api/flight/route/getById/{routeId}")

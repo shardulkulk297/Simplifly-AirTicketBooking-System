@@ -1,5 +1,6 @@
 package com.ats.simplifly.model;
 
+import com.ats.simplifly.model.enums.Gender;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class Passenger {
     private String fullName;
     @Column(name = "dob")
     private LocalDate dateOfBirth;
+    private Gender gender;
     private String passportNumber;
     private String nationality;
 
@@ -65,5 +67,13 @@ public class Passenger {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

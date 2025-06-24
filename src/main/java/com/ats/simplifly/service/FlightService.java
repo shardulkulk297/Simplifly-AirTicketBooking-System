@@ -111,4 +111,8 @@ public class FlightService {
     public List<Flight> getFlightsByRoute(String origin, String destination) {
         return flightRepository.getFlightsByRoute(origin, destination);
     }
+
+    public int getTotalFlights() {
+        return flightRepository.getTotalFlights();
+    }
 }

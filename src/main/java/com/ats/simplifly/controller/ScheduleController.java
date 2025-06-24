@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -35,7 +36,7 @@ public class ScheduleController {
      */
     @GetMapping("/api/flight/schedule/getAll")
     public ResponseEntity<?> getAllSchedules(Principal principal){
-        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getAllSchedules(principal.getName()));
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getAllSchedules(principal.getName()));
     }
     /*
     API: For Filter according to price of the flight and the route
@@ -53,8 +54,8 @@ public class ScheduleController {
      */
 
     @GetMapping("/api/flight/schedule/search")
-    public ResponseEntity<?> getFlightsSearch(String origin, String destination, LocalDateTime date){
-        return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getFlightSearch(origin, destination, date));
+    public ResponseEntity<?> getFlightsSearch(String origin, String destination, LocalDate date){
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getFlightSearch(origin, destination, date));
     }
     @GetMapping("/api/flight/schedule/getFlightSchedule")
     public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
@@ -65,12 +66,16 @@ public class ScheduleController {
     AUTH: MANAGER
      */
 
-    @GetMapping("/api")
-    @DeleteMapping("/api/flight/schedule/delete/{scheduleId}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId){
-        scheduleService.deleteSchedule(scheduleId);
+
+    @PutMapping("/api/flight/schedule/delete/{scheduleId}")
+    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId, @RequestBody String status){
+        scheduleService.deleteSchedule(scheduleId, status);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully");
     }
+
+
+
+
 
 
 

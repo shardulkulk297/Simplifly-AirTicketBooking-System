@@ -17,4 +17,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     @Query("Select f from Flight f WHERE f.route.origin = ?1 AND f.route.destination = ?2")
     List<Flight> getFlightsByRoute(String origin, String destination);
+
+    @Query("Select count(f.id) from Flight f")
+    int getTotalFlights();
 }

@@ -58,12 +58,12 @@ public class UserService {
             }
             case Role.FLIGHTOWNER -> {
                 FlightOwner owner = flightOwnerRepository.getByUsername(username);
-                if(owner.getDocumentStatus()!= DocumentStatus.APPROVED){
-                    throw new RuntimeException("Flightowner not verified");
-                }
-                else{
+//                if(owner.getDocumentStatus()!= DocumentStatus.APPROVED){
+//                    throw new RuntimeException("Flightowner not verified");
+//                }
+
                     return owner;
-                }
+
             }
             case Role.MANAGER -> {
                 PlatformManager manager = managerRepository.getByUsername(username);

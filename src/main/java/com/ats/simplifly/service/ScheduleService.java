@@ -80,21 +80,27 @@ public class ScheduleService {
         return allSchedules;
     }
 
-    public void deleteSchedule(int scheduleId){
+    public void deleteSchedule(int scheduleId, String status){
         if(scheduleRepository.findById(scheduleId) == null){
             throw new ResourceNotFoundException("Schedule Not found");
         }
-        seatService.deleteSeats(scheduleId);
-        scheduleRepository.deleteById(scheduleId);
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
+        schedule.setStatus(status);
+        scheduleRepository.save(schedule);
     }
-
 
     public List<Flight> getFlightsByFareAndRoute(String origin, String destination, double fare) {
         return scheduleRepository.getFlightsByFareAndRoute(origin, destination, fare);
     }
 
-    public List<Schedule> getFlightSearch(String origin, String destination, LocalDateTime date) {
+    public List<Schedule> getFlightSearch(String origin, String destination, LocalDate date) {
 
-        return scheduleRepository.searchFlight(origin, destination, date);
+        LocalDateTime start =
+                date.equals(LocalDate.now())
+                        ? LocalDateTime.now()        // today → from now onward
+                        : date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+        return scheduleRepository.searchFlight(origin, destination, start, end);
     }
 }
