@@ -49,23 +49,47 @@ public class ScheduleService {
     }
 
     //Updating schedule
-    public Schedule updateSchedule(Schedule schedule, int scheduleId){
-        Schedule scheduleToUpdate = scheduleRepository.findById(scheduleId).orElseThrow(()->new ResourceNotFoundException("Schedule not found to update"));
+    public Schedule updateSchedule(Schedule schedule, int scheduleId) {
+        Schedule scheduleToUpdate = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found to update"));
 
-        if(schedule.getArrivalTime()!=null){
+        if (schedule.getArrivalTime() != null) {
             scheduleToUpdate.setArrivalTime(schedule.getArrivalTime());
         }
-        if(schedule.getFare()!=0){
-            scheduleToUpdate.setFare(schedule.getFare());
-        }
-        if(schedule.getFlight()!=null){
-            scheduleToUpdate.setFlight(schedule.getFlight());
-        }
-        if(schedule.getDepartureTime()!=null){
+        if (schedule.getDepartureTime() != null) {
             scheduleToUpdate.setDepartureTime(schedule.getDepartureTime());
         }
+        if (schedule.getFare() != 0) {
+            scheduleToUpdate.setFare(schedule.getFare());
+        }
+        if (schedule.getFlight() != null) {
+            scheduleToUpdate.setFlight(schedule.getFlight());
+        }
+        if (schedule.getIsWifiAvailable() != null) {
+            scheduleToUpdate.setIsWifiAvailable(schedule.getIsWifiAvailable());
+        }
+        if (schedule.getFreeMeal() != null) {
+            scheduleToUpdate.setFreeMeal(schedule.getFreeMeal());
+        }
+        if (schedule.getMealAvailable() != null) {
+            scheduleToUpdate.setMealAvailable(schedule.getMealAvailable());
+        }
+        if (schedule.getStartDate() != null) {
+            scheduleToUpdate.setStartDate(schedule.getStartDate());
+        }
+        if (schedule.getEndDate() != null) {
+            scheduleToUpdate.setEndDate(schedule.getEndDate());
+        }
+        if (schedule.getOperatingDays() != null && !schedule.getOperatingDays().isEmpty()) {
+            scheduleToUpdate.setOperatingDays(schedule.getOperatingDays());
+        }
+        if (schedule.getStatus() != null) {
+            scheduleToUpdate.setStatus(schedule.getStatus());
+        }
+
         return scheduleRepository.save(scheduleToUpdate);
     }
+
     //Getting schedule by Id
     public Schedule getScheduleByFlight(int flightId)
     {
@@ -80,13 +104,13 @@ public class ScheduleService {
         return allSchedules;
     }
 
-    public void deleteSchedule(int scheduleId, String status){
+    public void deleteSchedule(int scheduleId, Schedule schedule){
         if(scheduleRepository.findById(scheduleId) == null){
             throw new ResourceNotFoundException("Schedule Not found");
         }
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
-        schedule.setStatus(status);
-        scheduleRepository.save(schedule);
+        Schedule existing = scheduleRepository.findById(scheduleId).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
+        seatService.deleteSeats(existing.getId());
+        scheduleRepository.delete(existing);
     }
 
     public List<Flight> getFlightsByFareAndRoute(String origin, String destination, double fare) {

@@ -68,7 +68,7 @@ public class ScheduleController {
 
 
     @PutMapping("/api/flight/schedule/delete/{scheduleId}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId, @RequestBody String status){
+    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId, @RequestBody Schedule status){
         scheduleService.deleteSchedule(scheduleId, status);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully");
     }

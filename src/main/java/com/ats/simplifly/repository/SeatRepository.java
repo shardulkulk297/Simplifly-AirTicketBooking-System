@@ -3,7 +3,9 @@ package com.ats.simplifly.repository;
 import com.ats.simplifly.model.Schedule;
 import com.ats.simplifly.model.Seat;
 import com.ats.simplifly.model.enums.SeatStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +13,9 @@ import java.util.List;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Integer> {
+
+    @Modifying
+    @Transactional
     @Query("Delete FROM Seat s WHERE s.schedule.id = ?1")
     void deleteSeatsBySchedule(int scheduleId);
 

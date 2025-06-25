@@ -1,6 +1,8 @@
 package com.ats.simplifly.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "booking_seat")
@@ -13,6 +15,7 @@ public class BookingSeat {
     @ManyToOne
     private Passenger passenger;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Seat seat;
     @Column(nullable = false)
     private double price;
