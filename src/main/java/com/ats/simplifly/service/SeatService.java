@@ -36,7 +36,7 @@ public class SeatService {
 
     private void createFirstClassSeats(Schedule schedule, Flight flight) {
         
-        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2); //2 Seats Per Row
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0); //2 Seats Per Row
         if(flight.getFirstClassSeats()==0){
             return;
         }
@@ -49,8 +49,10 @@ public class SeatService {
                 seat.setSeatNumber(row + String.valueOf(seatLetter));
                 seat.setSchedule(schedule);
                 seat.setSeatClassType(SeatClassType.FIRST);
-                seat.setPrice(schedule.getFare()*5);
+                double firstclassRate = schedule.getFirstClassRate()!=null ? schedule.getFirstClassRate(): 3;
+                seat.setPrice(schedule.getFare() * firstclassRate);
                 createSeat(seat);
+                seatCount++;
             }
         }
 
@@ -58,8 +60,8 @@ public class SeatService {
 
     private void createBusinessClassSeats(Schedule schedule, Flight flight) {
 
-        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2);
-        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4); //4 seats per row
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0);
+        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4.0); //4 seats per row
 
 
         if(flight.getBusinessClassSeats() == 0){
@@ -78,8 +80,10 @@ public class SeatService {
                 seat.setSeatNumber(row + String.valueOf(seatLetter));
                 seat.setSchedule(schedule);
                 seat.setSeatClassType(SeatClassType.BUSINESS);
-                seat.setPrice(schedule.getFare() * 3);
+                double businessClassRate = schedule.getBusinessClassRate()!=null ? schedule.getBusinessClassRate():1.5;
+                seat.setPrice(schedule.getFare() * businessClassRate);
                 createSeat(seat);
+                seatCount++;
             }
         }
 
@@ -93,9 +97,9 @@ public class SeatService {
         int businessClassSeats = flight.getBusinessClassSeats();
         int economySeats = totalSeats - (firstClassSeats + businessClassSeats);
 
-        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2);
-        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4);
-        int economyRows = (int) Math.ceil(economySeats / 6);
+        int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0);
+        int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4.0);
+        int economyRows = (int) Math.ceil(economySeats / 6.0);
 
         if(economySeats <= 0 ){
             return;
@@ -114,6 +118,7 @@ public class SeatService {
                 seat.setSeatClassType(SeatClassType.ECONOMY);
                 seat.setPrice(schedule.getFare());
                 createSeat(seat);
+                seatCount++;
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.ats.simplifly.model.enums;
 
-public enum DocumentStatus {
+public enum VerificationStatus {
 
     PENDING,
     APPROVED,

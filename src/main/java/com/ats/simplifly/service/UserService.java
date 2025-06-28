@@ -4,7 +4,6 @@ import com.ats.simplifly.model.Customer;
 import com.ats.simplifly.model.FlightOwner;
 import com.ats.simplifly.model.PlatformManager;
 import com.ats.simplifly.model.User;
-import com.ats.simplifly.model.enums.DocumentStatus;
 import com.ats.simplifly.model.enums.Role;
 import com.ats.simplifly.repository.CustomerRepository;
 import com.ats.simplifly.repository.FlightOwnerRepository;

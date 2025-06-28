@@ -17,6 +17,7 @@ public class Customer {
     private String contactNumber;
     @Column(nullable = false)
     private String address;
+    private String imageLink;
     @OneToOne
     @JoinColumn(nullable = false)
     private User user;
@@ -27,6 +28,14 @@ public class Customer {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 
     public int getId() {

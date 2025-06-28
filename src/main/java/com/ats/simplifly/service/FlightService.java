@@ -46,12 +46,13 @@ public class FlightService {
         Route mainRoute = routeRepository.findByRoute(route.getOrigin(), route.getDestination());
         if(mainRoute!=null)
         {
-            route.setId(mainRoute.getId());
+            flight.setRoute(mainRoute);
         }
         else{
             route = routeRepository.save(route);
+            flight.setRoute(route);
         }
-        flight.setRoute(route);
+
         return flightRepository.save(flight);
     }
 

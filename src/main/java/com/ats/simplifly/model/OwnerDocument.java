@@ -1,6 +1,6 @@
 package com.ats.simplifly.model;
 
-import com.ats.simplifly.model.enums.DocumentStatus;
+import com.ats.simplifly.model.enums.VerificationStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -19,7 +19,7 @@ public class OwnerDocument {
     private String documentType;
     @Column(name = "document_status")
     @Enumerated(EnumType.STRING)
-    private DocumentStatus documentStatus;
+    private VerificationStatus verificationStatus;
     private LocalTime uploadTime;
     @ManyToOne
     private PlatformManager verifiedBy;
@@ -57,12 +57,12 @@ public class OwnerDocument {
         this.documentType = documentType;
     }
 
-    public DocumentStatus getDocumentStatus() {
-        return documentStatus;
+    public VerificationStatus getDocumentStatus() {
+        return verificationStatus;
     }
 
-    public void setDocumentStatus(DocumentStatus documentStatus) {
-        this.documentStatus = documentStatus;
+    public void setDocumentStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 
     public LocalTime getUploadTime() {

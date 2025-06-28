@@ -19,45 +19,47 @@ public class Schedule {
     @ManyToOne
     private Flight flight;
     @Column(name = "departure_time", nullable = false)
-    private LocalTime departureTime;
-    private LocalTime arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
     private double fare;
     private String isWifiAvailable;
     private String freeMeal;
     private String mealAvailable;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    @ElementCollection(targetClass = DaysOfWeek.class)
-    @CollectionTable(
-            name = "operating_days",
-            joinColumns = @JoinColumn(name = "schedule_id")
-    )
-    @Enumerated(EnumType.STRING)
-    private Set<DaysOfWeek> operatingDays;
-    @Column()
-    private String status = "ACTIVE";
+    @Column(name = "business_class_rate")
+    private Double businessClassRate;
 
-    public String getStatus() {
-        return status;
+    @Column(name = "first_class_rate")
+    private Double firstClassRate;
+
+    public Double getBusinessClassRate() {
+        return businessClassRate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setBusinessClassRate(Double businessClassRate) {
+        this.businessClassRate = businessClassRate;
     }
 
-    public LocalTime getDepartureTime() {
+    public Double getFirstClassRate() {
+        return firstClassRate;
+    }
+
+    public void setFirstClassRate(Double firstClassRate) {
+        this.firstClassRate = firstClassRate;
+    }
+
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalTime departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalTime getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalTime arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -109,28 +111,4 @@ public class Schedule {
         this.mealAvailable = mealAvailable;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public Set<DaysOfWeek> getOperatingDays() {
-        return operatingDays;
-    }
-
-    public void setOperatingDays(Set<DaysOfWeek> operatingDays) {
-        this.operatingDays = operatingDays;
-    }
 }

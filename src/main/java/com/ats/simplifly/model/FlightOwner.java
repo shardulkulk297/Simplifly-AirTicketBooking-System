@@ -1,6 +1,6 @@
 package com.ats.simplifly.model;
 
-import com.ats.simplifly.model.enums.DocumentStatus;
+import com.ats.simplifly.model.enums.VerificationStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +14,8 @@ public class FlightOwner {
     private String email;
     private String contactPhone;
     @Enumerated(EnumType.STRING)
-    private DocumentStatus documentStatus;
+    private VerificationStatus verificationStatus;
+    private String logoLink;
     @OneToOne
     @JoinColumn(nullable = false)
     private User user;
@@ -59,11 +60,19 @@ public class FlightOwner {
         this.contactPhone = contactPhone;
     }
 
-    public DocumentStatus getDocumentStatus() {
-        return documentStatus;
+    public VerificationStatus getVerificationStatus() {
+        return verificationStatus;
     }
 
-    public void setDocumentStatus(DocumentStatus documentStatus) {
-        this.documentStatus = documentStatus;
+    public void setVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
+    public String getLogoLink() {
+        return logoLink;
+    }
+
+    public void setLogoLink(String logoLink) {
+        this.logoLink = logoLink;
     }
 }

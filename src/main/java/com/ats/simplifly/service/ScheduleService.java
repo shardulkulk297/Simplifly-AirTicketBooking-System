@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ats.simplifly.exception.ResourceNotFoundException;
@@ -74,18 +77,8 @@ public class ScheduleService {
         if (schedule.getMealAvailable() != null) {
             scheduleToUpdate.setMealAvailable(schedule.getMealAvailable());
         }
-        if (schedule.getStartDate() != null) {
-            scheduleToUpdate.setStartDate(schedule.getStartDate());
-        }
-        if (schedule.getEndDate() != null) {
-            scheduleToUpdate.setEndDate(schedule.getEndDate());
-        }
-        if (schedule.getOperatingDays() != null && !schedule.getOperatingDays().isEmpty()) {
-            scheduleToUpdate.setOperatingDays(schedule.getOperatingDays());
-        }
-        if (schedule.getStatus() != null) {
-            scheduleToUpdate.setStatus(schedule.getStatus());
-        }
+
+
 
         return scheduleRepository.save(scheduleToUpdate);
     }
@@ -104,7 +97,7 @@ public class ScheduleService {
         return allSchedules;
     }
 
-    public void deleteSchedule(int scheduleId, Schedule schedule){
+    public void deleteSchedule(int scheduleId){
         if(scheduleRepository.findById(scheduleId) == null){
             throw new ResourceNotFoundException("Schedule Not found");
         }
@@ -117,14 +110,28 @@ public class ScheduleService {
         return scheduleRepository.getFlightsByFareAndRoute(origin, destination, fare);
     }
 
-    public List<Schedule> getFlightSearch(String origin, String destination, LocalDate date) {
+    public List<Schedule> getFlightSearch(String origin, String destination, String datee, Integer page,Integer size) {
 
-        LocalDateTime start =
-                date.equals(LocalDate.now())
-                        ? LocalDateTime.now()        // today → from now onward
-                        : date.atStartOfDay();
+        LocalDate date = LocalDate.parse(datee);
+        /*
+        For proper search results
+       */
+        /*
+         1. Taking current time of the user
+         */
+        LocalDateTime now = LocalDateTime.now();
+           /*
+        2. If it is todays date then starting from current time else start from midnight
+        */
+        LocalDateTime start = date.isEqual(LocalDate.now()) ? now : date.atStartOfDay();
+
+        /*
+           3. Setting End time as well as user should get all the results for that particular date
+         */
         LocalDateTime end = date.plusDays(1).atStartOfDay();
-
-        return scheduleRepository.searchFlight(origin, destination, start, end);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Schedule> schedules =  scheduleRepository.searchFlight(origin, destination, start, end, pageable);
+        List<Schedule> scheduleList = schedules.getContent();
+        return scheduleList;
     }
 }

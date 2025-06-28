@@ -2,6 +2,7 @@ package com.ats.simplifly;
 
 import com.ats.simplifly.exception.ResourceNotFoundException;
 import com.ats.simplifly.exception.SeatsNotAvailableException;
+import com.ats.simplifly.exception.UsernamAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +34,13 @@ public class GlobalExceptionHandler {
         Map<String, String> map = new HashMap<>();
         map.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
+    }
+
+    @ExceptionHandler(exception = UsernamAlreadyExistsException.class)
+    public ResponseEntity<?> UsernameAlreadyExistsExceptionHandler(UsernamAlreadyExistsException e){
+        Map<String, String> map = new HashMap<>();
+        map.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
 }

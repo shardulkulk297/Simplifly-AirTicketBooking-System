@@ -37,6 +37,9 @@ public class SecurityConfig {
                          */
                         .requestMatchers("/api/flightOwner/getOwner").hasAuthority("FLIGHTOWNER")
                         .requestMatchers("/api/flightOwner/editProfile").hasAuthority("FLIGHTOWNER")
+                        .requestMatchers("/api/flightOwner/upload/logo").hasAuthority("FLIGHTOWNER")
+                        .requestMatchers("/api/flightOwner/upload/logo/{id}").permitAll()
+
                         /*
                        Route API'S
                          */

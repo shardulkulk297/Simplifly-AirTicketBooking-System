@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
+@CrossOrigin("http://localhost:5173")
 public class FlightOwnerController {
 
     private final FlightOwnerService flightOwnerService;
@@ -40,6 +43,18 @@ public class FlightOwnerController {
         flightOwner.setUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(flightOwnerService.editProfile(flightOwner));
     }
+
+    @PostMapping("/api/flightOwner/upload/logo")
+    public ResponseEntity<?> uploadLogo(@RequestBody MultipartFile file, Principal principal) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(flightOwnerService.uploadLogo(file, principal.getName()));
+    }
+
+    @PutMapping("/api/flightOwner/upload/logo/{id}")
+    public ResponseEntity<?> uploadLogo(@PathVariable int id, @RequestParam MultipartFile file) throws IOException{
+        FlightOwner updated = flightOwnerService.uploadLogoSignUp(id, file);
+        return ResponseEntity.ok(updated);
+    }
+
 
 
 

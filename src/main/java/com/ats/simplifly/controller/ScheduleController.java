@@ -54,9 +54,12 @@ public class ScheduleController {
      */
 
     @GetMapping("/api/flight/schedule/search")
-    public ResponseEntity<?> getFlightsSearch(String origin, String destination, LocalDate date){
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getFlightSearch(origin, destination, date));
+    public ResponseEntity<?> getFlightsSearch(@RequestParam String origin,@RequestParam String destination, @RequestParam String date, @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                              @RequestParam(name = "size", required = false, defaultValue = "1000000") Integer size ){
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getFlightSearch(origin, destination, date, page, size));
     }
+
+
     @GetMapping("/api/flight/schedule/getFlightSchedule")
     public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getScheduleByFlight(flightId));
@@ -67,9 +70,9 @@ public class ScheduleController {
      */
 
 
-    @PutMapping("/api/flight/schedule/delete/{scheduleId}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId, @RequestBody Schedule status){
-        scheduleService.deleteSchedule(scheduleId, status);
+    @DeleteMapping("/api/flight/schedule/delete/{scheduleId}")
+    public ResponseEntity<?> deleteSchedule(@PathVariable int scheduleId){
+        scheduleService.deleteSchedule(scheduleId);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully");
     }
 
