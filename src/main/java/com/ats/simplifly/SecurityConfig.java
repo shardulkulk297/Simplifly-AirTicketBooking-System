@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Configuration
 @EnableWebSecurity
@@ -75,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/booking/book").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/passenger/add").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/booking/cancel").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/booking/getBookings").hasAuthority("CUSTOMER")
                          /*
                          DELETE API's
                           */

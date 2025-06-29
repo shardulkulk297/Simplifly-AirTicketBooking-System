@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class BookingRequestDto {
 
-    private Schedule schedule;
+    private int scheduleId;
     private List<Passenger> passengers;
     private List<String> seatNumbers;
     private int noOfTickets;
@@ -25,12 +25,12 @@ public class BookingRequestDto {
         this.seatNumbers = seatNumbers;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
+    public int getScheduleId() {
+        return scheduleId;
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     public List<Passenger> getPassengers() {

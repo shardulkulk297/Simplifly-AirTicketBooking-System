@@ -57,7 +57,7 @@ public class BookingService {
         /*
         Getting Schedule of flight
          */
-        Schedule schedule = scheduleRepository.findById(bookingRequestDto.getSchedule().getId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
+        Schedule schedule = scheduleRepository.findById(bookingRequestDto.getScheduleId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
         /*
         Setting Schedule
          */
@@ -84,7 +84,7 @@ public class BookingService {
         /*
             Validate availability (Seat.status=AVAILABLE)
          */
-        boolean checkAvailability = seatService.checkAvailableTickets(bookingRequestDto.getSchedule(), noOfTickets);
+        boolean checkAvailability = seatService.checkAvailableTickets(schedule, noOfTickets);
         if(checkAvailability){
 
             /*
@@ -178,6 +178,26 @@ public class BookingService {
         }
 
         return null;
+    }
+
+    public List<BookingDto> getBookings(String name) {
+        List<Booking> bookings = bookingRepository.getByCustomer(name);
+        List<BookingDto> bookingDtos = new ArrayList<>();
+        for(Booking booking: bookings){
+            BookingDto bookingDto = new BookingDto();
+            bookingDto.setBookingStatus(booking.getBookingStatus());
+            bookingDto.setBookedBy(booking.getCustomer().getFullName());
+            List<Passenger> passengers = bookingSeatRepository.getPassengersByBooking(booking.getId());
+            bookingDto.setPassengerNames(passengers);
+            bookingDto.setFlightNumber(booking.getSchedule().getFlight().getFlightNumber());
+            bookingDto.setDepartureTime(booking.getSchedule().getDepartureTime());
+            bookingDto.setRoute(booking.getSchedule().getFlight().getRoute());
+            bookingDto.setArrivalTime(booking.getSchedule().getArrivalTime());
+            bookingDto.setTotalPrice(booking.getTotalAmount());
+            bookingDto.setSeatNumbers(bookingSeatRepository.getSeats(booking.getId()));
+            bookingDtos.add(bookingDto);
+        }
+        return bookingDtos;
     }
 
 //    public BookingDto cancelBooking(BookingRequestDto bookingRequestDto, String username){
