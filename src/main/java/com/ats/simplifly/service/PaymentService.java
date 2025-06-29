@@ -33,4 +33,8 @@ public class PaymentService {
         paymentRepository.save(payment);
         return payment.getPaymentStatus();
     }
+
+    public PaymentStatus processRefund(Booking booking) {
+        return PaymentStatus.SUCCESS;
+    }
 }

@@ -3,6 +3,7 @@ package com.ats.simplifly.controller;
 import com.ats.simplifly.dto.BookingDto;
 import com.ats.simplifly.dto.BookingRequestDto;
 import jakarta.persistence.Column;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 
 import com.ats.simplifly.model.Booking;
@@ -32,5 +33,10 @@ public class BookingController {
     @GetMapping("/api/booking/getBookings")
     public ResponseEntity<?> getBookings(Principal principal){
         return ResponseEntity.status(HttpStatus.OK).body(bookingService.getBookings(principal.getName()));
+    }
+
+    @PutMapping("/api/booking/cancelBooking/{bookingId}")
+    public ResponseEntity<?> cancelBooking(@PathVariable int bookingId, Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelTicket(bookingId, principal.getName()));
     }
 }

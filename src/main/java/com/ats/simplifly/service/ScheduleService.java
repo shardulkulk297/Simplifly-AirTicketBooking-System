@@ -2,8 +2,15 @@ package com.ats.simplifly.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ats.simplifly.dto.FlightDto;
+import com.ats.simplifly.dto.FlightOwnerDto;
+import com.ats.simplifly.dto.ScheduleDto;
+import com.ats.simplifly.dto.UserDto;
+import com.ats.simplifly.model.FlightOwner;
+import com.ats.simplifly.model.Route;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -110,37 +117,85 @@ public class ScheduleService {
         return scheduleRepository.getFlightsByFareAndRoute(origin, destination, fare);
     }
 
-    public List<Schedule> getFlightSearch(String origin, String destination, String datee, Integer page,Integer size) {
-
+    public List<ScheduleDto> getFlightSearch(String origin, String destination, String datee, Integer page,Integer size) {
         LocalDate date = LocalDate.parse(datee);
-        /*
-        For proper search results
-       */
-        /*
-         1. Taking current time of the user
-         */
         LocalDateTime now = LocalDateTime.now();
-           /*
-        2. If it is todays date then starting from current time else start from midnight
-        */
-        LocalDateTime start = date.isEqual(LocalDate.now()) ? now : date.atStartOfDay();
 
-        /*
-           3. Setting End time as well as user should get all the results for that particular date
-         */
+        LocalDateTime start = date.isEqual(LocalDate.now()) ? now : date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay();
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<Schedule> schedules =  scheduleRepository.searchFlight(origin, destination, start, end, pageable);
+        Page<Schedule> schedules = scheduleRepository.searchFlight(origin, destination, start, end, pageable);
         List<Schedule> scheduleList = schedules.getContent();
-        return scheduleList;
+
+        List<ScheduleDto> scheduleDtos = new ArrayList<>();
+        for (Schedule schedule : scheduleList) {
+            scheduleDtos.add(convertToScheduleDto(schedule));
+        }
+
+        return scheduleDtos;
     }
 
-    public Schedule getSchedule(int scheduleId) {
-        if(scheduleId <= 0){
+    public ScheduleDto getSchedule(int scheduleId) {
+        if (scheduleId <= 0) {
             throw new RuntimeException("Incorrect ScheduleId");
         }
 
-        return scheduleRepository.findById(scheduleId).orElseThrow(()-> new ResourceNotFoundException("Schedule Not Found"));
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule Not Found"));
 
+        return convertToScheduleDto(schedule);
     }
+
+    public ScheduleDto convertToScheduleDto(Schedule schedule) {
+        ScheduleDto dto = new ScheduleDto();
+        dto.setId(schedule.getId());
+        dto.setDepartureTime(schedule.getDepartureTime());
+        dto.setArrivalTime(schedule.getArrivalTime());
+        dto.setFare(schedule.getFare());
+        dto.setIsWifiAvailable(schedule.getIsWifiAvailable());
+        dto.setFreeMeal(schedule.getFreeMeal());
+        dto.setMealAvailable(schedule.getMealAvailable());
+        dto.setBusinessClassRate(schedule.getBusinessClassRate());
+        dto.setFirstClassRate(schedule.getFirstClassRate());
+
+        // Flight
+        Flight flight = schedule.getFlight();
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(flight.getId());
+        flightDto.setFlightNumber(flight.getFlightNumber());
+        flightDto.setBaggageCheckin(flight.getBaggageCheckin());
+        flightDto.setBaggageCabin(flight.getBaggageCabin());
+        flightDto.setTotalSeats(flight.getTotalSeats());
+        flightDto.setFirstClassSeats(flight.getFirstClassSeats());
+        flightDto.setBusinessClassSeats(flight.getBusinessClassSeats());
+
+        // Flight Owner
+        FlightOwner owner = flight.getOwner();
+        FlightOwnerDto ownerDto = new FlightOwnerDto();
+        ownerDto.setId(owner.getId());
+        ownerDto.setCompanyName(owner.getCompanyName());
+        ownerDto.setEmail(owner.getEmail());
+        ownerDto.setContactPhone(owner.getContactPhone());
+        ownerDto.setVerificationStatus(owner.getVerificationStatus());
+        ownerDto.setLogoLink(owner.getLogoLink());
+
+        UserDto userDto = new UserDto();
+        userDto.setId(owner.getUser().getId());
+        userDto.setUsername(owner.getUser().getUsername());
+        userDto.setRole(owner.getUser().getRole());
+
+        ownerDto.setUser(userDto);
+        flightDto.setOwner(ownerDto);
+
+        // Route
+        Route route = flight.getRoute();
+
+
+        flightDto.setRoute(route);
+        dto.setFlight(flightDto);
+
+        return dto;
+    }
+
 }

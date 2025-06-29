@@ -1,5 +1,8 @@
 package com.ats.simplifly.service;
 
+import com.ats.simplifly.dto.CustomerDto;
+import com.ats.simplifly.dto.FlightOwnerDto;
+import com.ats.simplifly.dto.UserDto;
 import com.ats.simplifly.model.Customer;
 import com.ats.simplifly.model.FlightOwner;
 import com.ats.simplifly.model.PlatformManager;
@@ -53,15 +56,39 @@ public class UserService {
         {
             case Role.CUSTOMER -> {
                 Customer customer = customerRepository.getByUsername(username);
-                return customer;
+                CustomerDto customerDto = new CustomerDto();
+                customerDto.setId(customer.getId());
+                customerDto.setFullName(customer.getFullName());
+                customerDto.setEmail(customer.getEmail());
+                customerDto.setContactNumber(customer.getContactNumber());
+                customerDto.setAddress(customer.getAddress());
+                customerDto.setImageLink(customer.getImageLink());
+
+                UserDto userDto = new UserDto();
+                userDto.setId(customer.getUser().getId());
+                userDto.setUsername(customer.getUser().getUsername());
+                userDto.setRole(customer.getUser().getRole());
+                customerDto.setUser(userDto);
+
+                return customerDto;
             }
             case Role.FLIGHTOWNER -> {
                 FlightOwner owner = flightOwnerRepository.getByUsername(username);
-//                if(owner.getDocumentStatus()!= DocumentStatus.APPROVED){
-//                    throw new RuntimeException("Flightowner not verified");
-//                }
+                FlightOwnerDto ownerDto = new FlightOwnerDto();
+                ownerDto.setId(owner.getId());
+                ownerDto.setCompanyName(owner.getCompanyName());
+                ownerDto.setEmail(owner.getEmail());
+                ownerDto.setContactPhone(owner.getContactPhone());
+                ownerDto.setLogoLink(owner.getLogoLink());
+                ownerDto.setVerificationStatus(owner.getVerificationStatus());
 
-                    return owner;
+                UserDto userDto = new UserDto();
+                userDto.setId(owner.getUser().getId());
+                userDto.setUsername(owner.getUser().getUsername());
+                userDto.setRole(owner.getUser().getRole());
+                ownerDto.setUser(userDto);
+
+                return ownerDto;
 
             }
             case Role.MANAGER -> {

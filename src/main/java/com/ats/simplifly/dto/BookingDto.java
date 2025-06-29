@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class BookingDto {
 
-
+    private int bookingId;
     private BookingStatus bookingStatus;
     private String bookedBy;
     private List<Passenger> passengerNames;
@@ -52,6 +52,14 @@ public class BookingDto {
 
     public void setPassengerNames(List<Passenger> passengerNames) {
         this.passengerNames = passengerNames;
+    }
+
+    public int getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
     }
 
     public Route getRoute() {

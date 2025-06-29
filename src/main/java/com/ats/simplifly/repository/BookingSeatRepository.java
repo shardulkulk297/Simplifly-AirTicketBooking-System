@@ -1,5 +1,6 @@
 package com.ats.simplifly.repository;
 
+import com.ats.simplifly.model.Booking;
 import com.ats.simplifly.model.BookingSeat;
 import com.ats.simplifly.model.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,6 @@ public interface BookingSeatRepository extends JpaRepository<BookingSeat, Intege
     List<Passenger> getPassengersByBooking(int bookingId);
     @Query("Select s.seat.seatNumber from BookingSeat s WHERE s.booking.id=?1")
     List<String> getSeats(int id);
+    @Query("Select s from BookingSeat s WHERE s.booking.id=?1")
+    List<BookingSeat> getBookingSeatsByBooking(int bookingId);
 }

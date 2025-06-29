@@ -1,18 +1,19 @@
 package com.ats.simplifly.service;
 
+import com.ats.simplifly.dto.*;
+import com.ats.simplifly.model.*;
 import org.springframework.stereotype.Service;
 
-import com.ats.simplifly.model.Flight;
-import com.ats.simplifly.model.Schedule;
-import com.ats.simplifly.model.Seat;
 import com.ats.simplifly.model.enums.SeatClassType;
 import com.ats.simplifly.model.enums.SeatStatus;
 import com.ats.simplifly.repository.SeatRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SeatService {
+
 
     private SeatRepository seatRepository;
 
@@ -34,7 +35,7 @@ public class SeatService {
         createEconomyClassSeats(schedule, flight);
     }
 
-    private void createFirstClassSeats(Schedule schedule, Flight flight) {
+    public void createFirstClassSeats(Schedule schedule, Flight flight) {
         
         int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0); //2 Seats Per Row
         if(flight.getFirstClassSeats()==0){
@@ -175,7 +176,73 @@ public class SeatService {
         }
     }
 
-    public List<Seat> getSeatsBySchedule(int scheduleId) {
-        return seatRepository.getSeatsBySchedule(scheduleId);
+    public List<SeatDto> getSeatsBySchedule(int scheduleId) {
+        List<Seat> seats = seatRepository.getSeatsBySchedule(scheduleId);
+        List<SeatDto> seatDtos = new ArrayList<>();
+
+        for (Seat seat : seats) {
+            SeatDto dto = new SeatDto();
+            dto.setId(seat.getId());
+            dto.setSeatNumber(seat.getSeatNumber());
+            dto.setSeatClassType(seat.getSeatClassType());
+            dto.setSeatStatus(seat.getSeatStatus());
+            dto.setPrice(seat.getPrice());
+            dto.setSchedule(convertToScheduleDto(seat.getSchedule()));
+            seatDtos.add(dto);
+        }
+        return seatDtos;
+    }
+
+    public void makeSeatsAvailable(List<String> seatNumbers, Schedule schedule) {
+        seatRepository.makeSeatsAvailable(seatNumbers, schedule.getId());
+    }
+
+    private ScheduleDto convertToScheduleDto(Schedule schedule) {
+        ScheduleDto dto = new ScheduleDto();
+        dto.setId(schedule.getId());
+        dto.setDepartureTime(schedule.getDepartureTime());
+        dto.setArrivalTime(schedule.getArrivalTime());
+        dto.setFare(schedule.getFare());
+        dto.setIsWifiAvailable(schedule.getIsWifiAvailable());
+        dto.setFreeMeal(schedule.getFreeMeal());
+        dto.setMealAvailable(schedule.getMealAvailable());
+        dto.setBusinessClassRate(schedule.getBusinessClassRate());
+        dto.setFirstClassRate(schedule.getFirstClassRate());
+
+        // Flight
+        Flight flight = schedule.getFlight();
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(flight.getId());
+        flightDto.setFlightNumber(flight.getFlightNumber());
+        flightDto.setBaggageCheckin(flight.getBaggageCheckin());
+        flightDto.setBaggageCabin(flight.getBaggageCabin());
+        flightDto.setTotalSeats(flight.getTotalSeats());
+        flightDto.setFirstClassSeats(flight.getFirstClassSeats());
+        flightDto.setBusinessClassSeats(flight.getBusinessClassSeats());
+
+        // Flight Owner
+        FlightOwner owner = flight.getOwner();
+        FlightOwnerDto ownerDto = new FlightOwnerDto();
+        ownerDto.setId(owner.getId());
+        ownerDto.setCompanyName(owner.getCompanyName());
+        ownerDto.setEmail(owner.getEmail());
+        ownerDto.setContactPhone(owner.getContactPhone());
+        ownerDto.setVerificationStatus(owner.getVerificationStatus());
+        ownerDto.setLogoLink(owner.getLogoLink());
+
+        UserDto userDto = new UserDto();
+        userDto.setId(owner.getUser().getId());
+        userDto.setUsername(owner.getUser().getUsername());
+        userDto.setRole(owner.getUser().getRole());
+
+        ownerDto.setUser(userDto);
+        flightDto.setOwner(ownerDto);
+
+        // Route
+        Route route = flight.getRoute();
+        flightDto.setRoute(route);
+        dto.setFlight(flightDto);
+
+        return dto;
     }
 }

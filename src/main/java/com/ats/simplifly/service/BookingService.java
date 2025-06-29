@@ -2,6 +2,7 @@ package com.ats.simplifly.service;
 
 import com.ats.simplifly.dto.BookingDto;
 import com.ats.simplifly.dto.BookingRequestDto;
+import com.ats.simplifly.dto.BookingSeatDto;
 import com.ats.simplifly.exception.ResourceNotFoundException;
 import com.ats.simplifly.exception.SeatsNotAvailableException;
 import com.ats.simplifly.model.*;
@@ -195,21 +196,97 @@ public class BookingService {
             bookingDto.setArrivalTime(booking.getSchedule().getArrivalTime());
             bookingDto.setTotalPrice(booking.getTotalAmount());
             bookingDto.setSeatNumbers(bookingSeatRepository.getSeats(booking.getId()));
+            bookingDto.setBookingId(booking.getId());
             bookingDtos.add(bookingDto);
         }
         return bookingDtos;
     }
 
-//    public BookingDto cancelBooking(BookingRequestDto bookingRequestDto, String username){
-//        /*
-//        Creating Booking POJO
-//         */
-//        Booking booking = new Booking();
-//
-//        Schedule schedule = scheduleRepository.findById(bookingRequestDto.getSchedule().getId()).orElseThrow(()->new ResourceNotFoundException("Schedule Not found"));
-//        List<String> seatNumbers = bookingRequestDto.getSeatNumbers();
-//        List<Passenger> passengers = bookingRequestDto.getPassengers();
-//        Customer customer = customerRepository.getByUsername(username);
-//
-//    }
+    public String cancelTicket(int bookingId, String username) {
+    /*
+    Find the booking by ID
+     */
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+    /*
+    Check if the booking belongs to the user
+     */
+        if (!booking.getCustomer().getUser().getUsername().equals(username)) {
+            throw new RuntimeException("You can only cancel your own bookings");
+        }
+
+    /*
+    Check if booking is already cancelled
+     */
+        if (booking.getBookingStatus().equals(BookingStatus.CANCELLED)) {
+            return "Booking is already cancelled";
+        }
+
+    /*
+    Check if booking can be cancelled (only CONFIRMED bookings can be cancelled)
+     */
+        if (!booking.getBookingStatus().equals(BookingStatus.CONFIRMED)) {
+            throw new RuntimeException("Only confirmed bookings can be cancelled");
+        }
+
+    /*
+    Get the schedule and flight details
+     */
+        Schedule schedule = booking.getSchedule();
+        Flight flight = schedule.getFlight();
+
+    /*
+    Get all booking seats for this booking
+     */
+        List<BookingSeatDto> bookingSeats = bookingSeatService.getBookingSeatsByBooking(booking);
+
+    /*
+    Get seat numbers from booking seats
+     */
+        List<String> seatNumbers = new ArrayList<>();
+        for (BookingSeatDto bookingSeat : bookingSeats) {
+            seatNumbers.add(bookingSeat.getSeat().getSeatNumber());
+        }
+
+    /*
+    Process refund
+     */
+        PaymentStatus refundStatus = paymentService.processRefund(booking);
+
+        if (refundStatus.equals(PaymentStatus.SUCCESS)) {
+        /*
+        Change booking status to CANCELLED
+         */
+            booking.setBookingStatus(BookingStatus.CANCELLED);
+            bookingRepository.save(booking);
+
+        /*
+        Make seats available again
+         */
+            seatService.makeSeatsAvailable(seatNumbers, schedule);
+
+        /*
+        Increase total available seats in flight
+         */
+            int numberOfSeats = seatNumbers.size();
+            flight.setTotalSeats(flight.getTotalSeats() + numberOfSeats);
+            flightService.updateFlight(flight, flight.getId());
+
+        /*
+        Delete booking seat records (optional - you might want to keep for history)
+         */
+
+
+            return "Booking cancelled successfully. Refund will be processed within 3-5 business days.";
+
+        } else {
+        /*
+        If refund fails, don't cancel the booking
+         */
+            throw new RuntimeException("Refund processing failed. Please contact customer support.");
+        }
+    }
+
+
 }

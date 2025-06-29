@@ -1,5 +1,8 @@
 package com.ats.simplifly.service;
 
+import com.ats.simplifly.dto.FlightDto;
+import com.ats.simplifly.dto.FlightOwnerDto;
+import com.ats.simplifly.dto.UserDto;
 import com.ats.simplifly.exception.ResourceNotFoundException;
 import com.ats.simplifly.model.Flight;
 import com.ats.simplifly.model.FlightOwner;
@@ -11,6 +14,7 @@ import com.ats.simplifly.repository.RouteRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,10 +64,55 @@ public class FlightService {
     WIll return the only flights that are created by logged in flight owner
      */
 
-    public List<Flight> getAllFlights(String username) {
+    public List<FlightDto> getAllFlights(String username) {
         FlightOwner flightOwner = flightOwnerRepository.getByUsername(username);
-        int id = flightOwner.getId();
-        return flightRepository.getAllFlights(id);
+        if (flightOwner == null) {
+            throw new ResourceNotFoundException("Flight Owner NOT FOUND");
+        }
+
+        int ownerId = flightOwner.getId();
+        List<Flight> flights = flightRepository.getAllFlights(ownerId);
+        List<FlightDto> flightDtos = new ArrayList<>();
+
+        for (Flight flight : flights) {
+            FlightDto dto = new FlightDto();
+            dto.setId(flight.getId());
+            dto.setFlightNumber(flight.getFlightNumber());
+            dto.setBaggageCheckin(flight.getBaggageCheckin());
+            dto.setBaggageCabin(flight.getBaggageCabin());
+            dto.setTotalSeats(flight.getTotalSeats());
+            dto.setFirstClassSeats(flight.getFirstClassSeats());
+            dto.setBusinessClassSeats(flight.getBusinessClassSeats());
+
+            // Manually map FlightOwner to FlightOwnerDto
+            FlightOwner owner = flight.getOwner();
+            FlightOwnerDto ownerDto = new FlightOwnerDto();
+            ownerDto.setId(owner.getId());
+            ownerDto.setCompanyName(owner.getCompanyName());
+            ownerDto.setEmail(owner.getEmail());
+            ownerDto.setContactPhone(owner.getContactPhone());
+            ownerDto.setVerificationStatus(owner.getVerificationStatus());
+            ownerDto.setLogoLink(owner.getLogoLink());
+
+            // Map nested User
+            UserDto userDto = new UserDto();
+            userDto.setId(owner.getUser().getId());
+            userDto.setUsername(owner.getUser().getUsername());
+            userDto.setRole(owner.getUser().getRole());
+            ownerDto.setUser(userDto);
+
+            dto.setOwner(ownerDto);
+
+            // Manually map Route to RouteDto
+            Route route = flight.getRoute();
+
+
+            dto.setRoute(route);
+
+            flightDtos.add(dto);
+
+        }
+        return flightDtos;
     }
 
 

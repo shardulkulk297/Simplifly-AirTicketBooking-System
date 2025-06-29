@@ -1,5 +1,7 @@
 package com.ats.simplifly.service;
 
+import com.ats.simplifly.dto.FlightOwnerDto;
+import com.ats.simplifly.dto.UserDto;
 import com.ats.simplifly.exception.ResourceNotFoundException;
 import com.ats.simplifly.exception.UsernamAlreadyExistsException;
 import com.ats.simplifly.model.FlightOwner;
@@ -63,14 +65,32 @@ public class FlightOwnerService {
         return flightOwnerRepository.save(flightOwner);
     }
 
-    public FlightOwner getOwner(String username){
+    public FlightOwnerDto getOwner(String username){
         FlightOwner flightOwner = flightOwnerRepository.getByUsername(username);
 
-        if(flightOwner == null){
+        if (flightOwner == null) {
             throw new ResourceNotFoundException("Flight Owner NOT FOUND");
         }
 
-        return flightOwner;
+        // Manually convert to DTO
+        FlightOwnerDto dto = new FlightOwnerDto();
+        dto.setId(flightOwner.getId());
+        dto.setCompanyName(flightOwner.getCompanyName());
+        dto.setEmail(flightOwner.getEmail());
+        dto.setContactPhone(flightOwner.getContactPhone());
+        dto.setVerificationStatus(flightOwner.getVerificationStatus());
+        dto.setLogoLink(flightOwner.getLogoLink());
+
+        // Populate nested UserDto
+        User user = flightOwner.getUser();
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setRole(user.getRole());
+
+        dto.setUser(userDto);
+
+        return dto;
 
     }
 

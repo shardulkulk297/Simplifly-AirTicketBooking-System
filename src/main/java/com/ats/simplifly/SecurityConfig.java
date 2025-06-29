@@ -77,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/passenger/add").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/booking/cancel").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/booking/getBookings").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/booking/cancelBooking/{bookingId}").hasAuthority("CUSTOMER")
                          /*
                          DELETE API's
                           */

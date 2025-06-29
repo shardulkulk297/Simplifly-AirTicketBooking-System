@@ -34,4 +34,9 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
     @Query("Select s from Seat s WHERE s.schedule.id = ?1")
     List<Seat> getSeatsBySchedule(int scheduleId);
+
+    @Modifying
+    @Transactional
+    @Query("Update Seat s SET s.seatStatus = 'AVAILABLE' WHERE s.seatNumber IN ?1 AND s.schedule.id=?2")
+    void makeSeatsAvailable(List<String> seatNumbers, int id);
 }
