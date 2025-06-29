@@ -134,4 +134,13 @@ public class ScheduleService {
         List<Schedule> scheduleList = schedules.getContent();
         return scheduleList;
     }
+
+    public Schedule getSchedule(int scheduleId) {
+        if(scheduleId <= 0){
+            throw new RuntimeException("Incorrect ScheduleId");
+        }
+
+        return scheduleRepository.findById(scheduleId).orElseThrow(()-> new ResourceNotFoundException("Schedule Not Found"));
+
+    }
 }

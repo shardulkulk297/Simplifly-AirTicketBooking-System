@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ats.simplifly.model.enums.BookingStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,11 +70,17 @@ public class BookingService {
             throw new ResourceNotFoundException("Customer Not found");
         }
         booking.setCustomer(customer);
-        List<Passenger> passengers = bookingRequestDto.getPassengers();
+        List<Passenger> bookingPassengers = bookingRequestDto.getPassengers();
         int noOfTickets = bookingRequestDto.getNoOfTickets();
-        for(Passenger p: passengers){
-            p.setCustomer(customer);
+        /*
+        Add Passengers to DB
+         */
+        List<Passenger> passengers = new ArrayList<>();
+        for(Passenger p: bookingPassengers){
+            Passenger passenger = passengerService.addPassenger(p, customer.getUser().getUsername());
+            passengers.add(passenger);
         }
+
         /*
             Validate availability (Seat.status=AVAILABLE)
          */

@@ -64,6 +64,12 @@ public class ScheduleController {
     public ResponseEntity<?> getFlightSchedule(@RequestParam int flightId){
         return ResponseEntity.status(HttpStatus.FOUND).body(scheduleService.getScheduleByFlight(flightId));
     }
+
+    @GetMapping("/api/flight/schedule/getSchedule/{scheduleId}")
+    public ResponseEntity<?> getSchedule(@PathVariable int scheduleId){
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getSchedule(scheduleId));
+    }
+
     /*
     API FOR: Showing all the schedules (Can only be called by manager)
     AUTH: MANAGER

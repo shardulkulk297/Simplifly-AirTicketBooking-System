@@ -174,4 +174,8 @@ public class SeatService {
             seatRepository.save(seat);
         }
     }
+
+    public List<Seat> getSeatsBySchedule(int scheduleId) {
+        return seatRepository.getSeatsBySchedule(scheduleId);
+    }
 }

@@ -34,8 +34,13 @@ public class PassengerService {
     public Passenger addPassenger(Passenger passenger, String username){
         Customer customer = customerRepository.getByUsername(username);
         passenger.setCustomer(customer);
+        Passenger passengerr = passengerRepository.findByCustomerNameGenderAge(customer.getUser().getUsername(), passenger.getName(), passenger.getGender(), passenger.getAge());
+        if(passengerr!=null){
+            return passengerr;
+        }
         return passengerRepository.save(passenger);
     }
+
 
 
     public Map<Passenger, Seat> mapPassengersToSeats(Schedule schedule, List<Passenger> passengers, List<String> seatNumbers) {

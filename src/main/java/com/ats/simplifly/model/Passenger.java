@@ -13,10 +13,9 @@ public class Passenger {
     private int id;
     @ManyToOne
     private Customer customer;
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-    @Column(name = "dob")
-    private LocalDate dateOfBirth;
+    @Column(name = "name", nullable = false)
+    private String name;
+    private int age;
     private Gender gender;
     private String passportNumber;
     private String nationality;
@@ -29,6 +28,14 @@ public class Passenger {
         this.id = id;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public Customer getCustomer() {
         return customer;
     }
@@ -37,20 +44,12 @@ public class Passenger {
         this.customer = customer;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassportNumber() {
