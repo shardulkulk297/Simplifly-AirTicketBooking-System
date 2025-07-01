@@ -1,5 +1,7 @@
 package com.ats.simplifly.dto;
 
+import java.util.Objects;
+
 public class CustomerDto {
     private int id;
     private String fullName;
@@ -76,5 +78,16 @@ public class CustomerDto {
 
     public void setUser(UserDto user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CustomerDto that)) return false;
+        return id == that.id && Objects.equals(fullName, that.fullName) && Objects.equals(email, that.email) && Objects.equals(contactNumber, that.contactNumber) && Objects.equals(address, that.address) && Objects.equals(imageLink, that.imageLink) && Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, email, contactNumber, address, imageLink, user);
     }
 }

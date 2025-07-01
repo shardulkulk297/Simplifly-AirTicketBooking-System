@@ -3,6 +3,8 @@ package com.ats.simplifly.dto;
 import com.ats.simplifly.model.enums.SeatClassType;
 import com.ats.simplifly.model.enums.SeatStatus;
 
+import java.util.Objects;
+
 public class SeatDto {
     private int id;
     private String seatNumber;
@@ -69,5 +71,16 @@ public class SeatDto {
 
     public void setSchedule(ScheduleDto schedule) {
         this.schedule = schedule;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SeatDto seatDto)) return false;
+        return id == seatDto.id && Double.compare(price, seatDto.price) == 0 && Objects.equals(seatNumber, seatDto.seatNumber) && seatClassType == seatDto.seatClassType && seatStatus == seatDto.seatStatus && Objects.equals(schedule, seatDto.schedule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, seatNumber, seatClassType, seatStatus, price, schedule);
     }
 }

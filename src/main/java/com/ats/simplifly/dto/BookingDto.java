@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
+
 @Component
 public class BookingDto {
 
@@ -102,5 +104,14 @@ public class BookingDto {
         this.totalPrice = totalPrice;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BookingDto that)) return false;
+        return bookingId == that.bookingId && Double.compare(totalPrice, that.totalPrice) == 0 && bookingStatus == that.bookingStatus && Objects.equals(bookedBy, that.bookedBy) && Objects.equals(passengerNames, that.passengerNames) && Objects.equals(route, that.route) && Objects.equals(flightNumber, that.flightNumber) && Objects.equals(departureTime, that.departureTime) && Objects.equals(arrivalTime, that.arrivalTime) && Objects.equals(seatNumbers, that.seatNumbers);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookingId, bookingStatus, bookedBy, passengerNames, route, flightNumber, departureTime, arrivalTime, totalPrice, seatNumbers);
+    }
 }

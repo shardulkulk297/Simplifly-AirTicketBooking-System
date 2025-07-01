@@ -2,6 +2,8 @@ package com.ats.simplifly.dto;
 
 import com.ats.simplifly.model.Route;
 
+import java.util.Objects;
+
 public class FlightDto {
     private int id;
     private String flightNumber;
@@ -91,4 +93,17 @@ public class FlightDto {
     public void setOwner(FlightOwnerDto owner) {
         this.owner = owner;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FlightDto flightDto)) return false;
+        return id == flightDto.id && baggageCheckin == flightDto.baggageCheckin && baggageCabin == flightDto.baggageCabin && totalSeats == flightDto.totalSeats && firstClassSeats == flightDto.firstClassSeats && businessClassSeats == flightDto.businessClassSeats && Objects.equals(flightNumber, flightDto.flightNumber) && Objects.equals(route, flightDto.route) && Objects.equals(owner, flightDto.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, flightNumber, baggageCheckin, baggageCabin, totalSeats, firstClassSeats, businessClassSeats, route, owner);
+    }
+
+
 }

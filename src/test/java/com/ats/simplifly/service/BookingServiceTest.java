@@ -103,6 +103,7 @@ class BookingServiceTest {
 
     @Test
     public void getBookingsTest() {
+
         List<Booking> bookings = List.of(booking);
         List<Passenger> passengers = List.of(passenger);
         List<String> seatNumbers = List.of("A1");
@@ -111,22 +112,26 @@ class BookingServiceTest {
         when(bookingSeatRepository.getPassengersByBooking(booking.getId())).thenReturn(passengers);
         when(bookingSeatRepository.getSeats(booking.getId())).thenReturn(seatNumbers);
 
-        List<BookingDto> bookingDtoList = bookingService.getBookings("John Doe");
 
-        assertEquals(1, bookingDtoList.size());
-        BookingDto dto = bookingDtoList.get(0);
-        assertEquals(booking.getBookingStatus(), dto.getBookingStatus());
-        assertEquals(customer.getFullName(), dto.getBookedBy());
-        assertEquals(passengers, dto.getPassengerNames());
-        assertEquals(flight.getFlightNumber(), dto.getFlightNumber());
-        assertEquals(schedule.getDepartureTime(), dto.getDepartureTime());
-        assertEquals(route, dto.getRoute());
-        assertEquals(schedule.getArrivalTime(), dto.getArrivalTime());
-        assertEquals(booking.getTotalAmount(), dto.getTotalPrice());
-        assertEquals(seatNumbers, dto.getSeatNumbers());
-        assertEquals(booking.getId(), dto.getBookingId());
+        BookingDto expected = new BookingDto();
+        expected.setBookingStatus(booking.getBookingStatus());
+        expected.setBookedBy(customer.getFullName());
+        expected.setPassengerNames(passengers);
+        expected.setFlightNumber(flight.getFlightNumber());
+        expected.setDepartureTime(schedule.getDepartureTime());
+        expected.setRoute(route);
+        expected.setArrivalTime(schedule.getArrivalTime());
+        expected.setTotalPrice(booking.getTotalAmount());
+        expected.setSeatNumbers(seatNumbers);
+        expected.setBookingId(booking.getId());
+
+
+        List<BookingDto> actualList = bookingService.getBookings("John Doe");
+
+
+        assertEquals(1, actualList.size());
+        assertEquals(expected, actualList.get(0));
     }
-
     @AfterEach
     public void afterTest() {
         booking = null;

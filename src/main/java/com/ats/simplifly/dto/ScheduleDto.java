@@ -1,6 +1,7 @@
 package com.ats.simplifly.dto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ScheduleDto {
     private int id;
@@ -109,5 +110,16 @@ public class ScheduleDto {
 
     public void setFlight(FlightDto flight) {
         this.flight = flight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ScheduleDto that)) return false;
+        return id == that.id && Double.compare(fare, that.fare) == 0 && Objects.equals(departureTime, that.departureTime) && Objects.equals(arrivalTime, that.arrivalTime) && Objects.equals(isWifiAvailable, that.isWifiAvailable) && Objects.equals(freeMeal, that.freeMeal) && Objects.equals(mealAvailable, that.mealAvailable) && Objects.equals(businessClassRate, that.businessClassRate) && Objects.equals(firstClassRate, that.firstClassRate) && Objects.equals(flight, that.flight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, departureTime, arrivalTime, fare, isWifiAvailable, freeMeal, mealAvailable, businessClassRate, firstClassRate, flight);
     }
 }

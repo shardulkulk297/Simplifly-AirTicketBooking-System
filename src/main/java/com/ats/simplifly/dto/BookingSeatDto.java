@@ -1,5 +1,7 @@
 package com.ats.simplifly.dto;
 
+import java.util.Objects;
+
 public class BookingSeatDto {
     private int id;
     private BookingDto booking;
@@ -45,5 +47,16 @@ public class BookingSeatDto {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BookingSeatDto that)) return false;
+        return id == that.id && Double.compare(price, that.price) == 0 && Objects.equals(booking, that.booking) && Objects.equals(passenger, that.passenger) && Objects.equals(seat, that.seat);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, booking, passenger, seat, price);
     }
 }

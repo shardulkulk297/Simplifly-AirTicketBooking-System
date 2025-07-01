@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import com.ats.simplifly.dto.BookingSeatDto;
+import com.ats.simplifly.dto.*;
 import com.ats.simplifly.model.*;
 import com.ats.simplifly.model.enums.Gender;
 import com.ats.simplifly.model.enums.Role;
@@ -40,24 +40,24 @@ public class BookingSeatServiceTest {
 
     @BeforeEach
     public void init() {
-        // Create User
+        
         user = new User();
         user.setId(1);
         user.setUsername("john_doe");
         user.setRole(Role.CUSTOMER);
 
 
-        // Create Customer
+        
         customer = new Customer();
         customer.setId(1);
         customer.setFullName("John Doe");
         customer.setEmail("john.doe@email.com");
         customer.setContactNumber("1234567890");
         customer.setAddress("123 Main St");
-        customer.setImageLink("http://example.com/image.jpg");
+        customer.setImageLink("image.jpg");
         customer.setUser(user);
 
-        // Create Passenger
+        
         passenger = new Passenger();
         passenger.setId(1);
         passenger.setName("John Doe");
@@ -68,7 +68,7 @@ public class BookingSeatServiceTest {
         passenger.setCustomer(customer);
 
 
-        // Create Seat
+        
         seat = new Seat();
         seat.setId(1);
         seat.setSeatNumber("A1");
@@ -77,11 +77,11 @@ public class BookingSeatServiceTest {
         seat.setPrice(250.0);
 
 
-        // Create Booking
+        
         booking = new Booking();
         booking.setId(1);
 
-        // Create BookingSeat
+        
         bookingSeat = new BookingSeat();
         bookingSeat.setId(1);
         bookingSeat.setPrice(250.0);
@@ -92,26 +92,54 @@ public class BookingSeatServiceTest {
 
     @Test
     public void getBookingSeatsByBookingTest() {
-        /* Prepare mocked expected result */
-        List<BookingSeat> expectedBookingSeats = List.of(bookingSeat);
+        
+        List<BookingSeat> repoResult = List.of(bookingSeat);
+        when(bookingSeatRepository.getBookingSeatsByBooking(booking.getId()))
+                .thenReturn(repoResult);
 
-        when(bookingSeatRepository.getBookingSeatsByBooking(booking.getId())).thenReturn(expectedBookingSeats);
+        
+        BookingSeatDto expectedDto = new BookingSeatDto();
+        expectedDto.setId(bookingSeat.getId());
+        expectedDto.setPrice(bookingSeat.getPrice());
 
-        /* Actual call to service method */
+        
+        SeatDto seatDto = new SeatDto();
+        seatDto.setId(seat.getId());
+        seatDto.setSeatNumber(seat.getSeatNumber());
+        seatDto.setSeatClassType(seat.getSeatClassType());
+        seatDto.setSeatStatus(seat.getSeatStatus());
+        seatDto.setPrice(seat.getPrice());
+        expectedDto.setSeat(seatDto);
+
+        
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getRole());
+
+        CustomerDto customerDto = new CustomerDto();
+        customerDto.setId(customer.getId());
+        customerDto.setFullName(customer.getFullName());
+        customerDto.setEmail(customer.getEmail());
+        customerDto.setContactNumber(customer.getContactNumber());
+        customerDto.setAddress(customer.getAddress());
+        customerDto.setImageLink(customer.getImageLink());
+        customerDto.setUser(userDto);
+
+        PassengerDto passengerDto = new PassengerDto();
+        passengerDto.setId(passenger.getId());
+        passengerDto.setName(passenger.getName());
+        passengerDto.setAge(passenger.getAge());
+        passengerDto.setGender(passenger.getGender());
+        passengerDto.setPassportNumber(passenger.getPassportNumber());
+        passengerDto.setNationality(passenger.getNationality());
+        passengerDto.setCustomer(customerDto);
+
+        expectedDto.setPassenger(passengerDto);
+
+        
         List<BookingSeatDto> actualList = bookingSeatService.getBookingSeatsByBooking(booking);
 
-        /* Assertions */
+        
         assertEquals(1, actualList.size());
-
-        BookingSeatDto actualDto = actualList.get(0);
-        assertEquals(bookingSeat.getId(), actualDto.getId());
-        assertEquals(bookingSeat.getPrice(), actualDto.getPrice());
-
-        // Verify nested objects exist
-        assertEquals(seat.getId(), actualDto.getSeat().getId());
-        assertEquals(passenger.getId(), actualDto.getPassenger().getId());
-        assertEquals(customer.getId(), actualDto.getPassenger().getCustomer().getId());
-        assertEquals(user.getId(), actualDto.getPassenger().getCustomer().getUser().getId());
+        assertEquals(expectedDto, actualList.get(0));
     }
 
     @AfterEach

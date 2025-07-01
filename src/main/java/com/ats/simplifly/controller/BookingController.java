@@ -39,4 +39,9 @@ public class BookingController {
     public ResponseEntity<?> cancelBooking(@PathVariable int bookingId, Principal principal){
         return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelTicket(bookingId, principal.getName()));
     }
+
+    @GetMapping("/api/booking/getBookingsBySchedule/{scheduleId}")
+    public ResponseEntity<?> getBookings(@PathVariable int scheduleId, Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(bookingService.getBookingsBySchedule(scheduleId,principal.getName()));
+    }
 }

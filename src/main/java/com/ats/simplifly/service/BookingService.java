@@ -289,4 +289,25 @@ public class BookingService {
     }
 
 
+    public List<BookingDto> getBookingsBySchedule(int scheduleId, String name) {
+        List<Booking> bookings = bookingRepository.getBookingsBySchedule(scheduleId, name);
+        List<BookingDto> bookingDtos = new ArrayList<>();
+        for(Booking booking: bookings){
+            BookingDto bookingDto = new BookingDto();
+            bookingDto.setBookingStatus(booking.getBookingStatus());
+            bookingDto.setBookedBy(booking.getCustomer().getFullName());
+            List<Passenger> passengers = bookingSeatRepository.getPassengersByBooking(booking.getId());
+            bookingDto.setPassengerNames(passengers);
+            bookingDto.setFlightNumber(booking.getSchedule().getFlight().getFlightNumber());
+            bookingDto.setDepartureTime(booking.getSchedule().getDepartureTime());
+            bookingDto.setRoute(booking.getSchedule().getFlight().getRoute());
+            bookingDto.setArrivalTime(booking.getSchedule().getArrivalTime());
+            bookingDto.setTotalPrice(booking.getTotalAmount());
+            bookingDto.setSeatNumbers(bookingSeatRepository.getSeats(booking.getId()));
+            bookingDto.setBookingId(booking.getId());
+            bookingDtos.add(bookingDto);
+        }
+        return bookingDtos;
+
+    }
 }

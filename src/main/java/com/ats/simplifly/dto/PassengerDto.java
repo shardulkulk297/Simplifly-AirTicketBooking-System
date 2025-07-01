@@ -2,6 +2,8 @@ package com.ats.simplifly.dto;
 
 import com.ats.simplifly.model.enums.Gender;
 
+import java.util.Objects;
+
 public class PassengerDto {
     private int id;
     private String name;
@@ -78,5 +80,16 @@ public class PassengerDto {
 
     public void setCustomer(CustomerDto customer) {
         this.customer = customer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PassengerDto that)) return false;
+        return id == that.id && age == that.age && Objects.equals(name, that.name) && gender == that.gender && Objects.equals(passportNumber, that.passportNumber) && Objects.equals(nationality, that.nationality) && Objects.equals(customer, that.customer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, gender, passportNumber, nationality, customer);
     }
 }

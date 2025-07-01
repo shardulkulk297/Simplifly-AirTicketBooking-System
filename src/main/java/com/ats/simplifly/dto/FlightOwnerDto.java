@@ -2,6 +2,8 @@ package com.ats.simplifly.dto;
 
 import com.ats.simplifly.model.enums.VerificationStatus;
 
+import java.util.Objects;
+
 public class FlightOwnerDto {
     private int id;
     private String companyName;
@@ -78,5 +80,16 @@ public class FlightOwnerDto {
 
     public void setUser(UserDto user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FlightOwnerDto that)) return false;
+        return id == that.id && Objects.equals(companyName, that.companyName) && Objects.equals(email, that.email) && Objects.equals(contactPhone, that.contactPhone) && verificationStatus == that.verificationStatus && Objects.equals(logoLink, that.logoLink) && Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, companyName, email, contactPhone, verificationStatus, logoLink, user);
     }
 }

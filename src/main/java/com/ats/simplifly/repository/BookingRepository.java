@@ -11,4 +11,6 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("Select b from Booking b WHERE b.customer.user.username=?1")
     List<Booking> getByCustomer(String name);
+    @Query("Select b from Booking b WHERE b.schedule.id=?1 AND b.schedule.flight.owner.user.username=?2")
+    List<Booking> getBookingsBySchedule(int scheduleId, String name);
 }

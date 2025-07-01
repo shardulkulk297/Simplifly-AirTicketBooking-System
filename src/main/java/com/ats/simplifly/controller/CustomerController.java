@@ -1,6 +1,7 @@
 package com.ats.simplifly.controller;
 
 import com.ats.simplifly.model.Customer;
+import com.ats.simplifly.model.FlightOwner;
 import com.ats.simplifly.model.User;
 import com.ats.simplifly.service.CustomerService;
 
@@ -8,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
+@CrossOrigin("http://localhost:5173")
 public class CustomerController {
 
     private CustomerService customerService;
@@ -45,5 +49,10 @@ public class CustomerController {
         customerService.deleteCustomer(customerId);
         return ResponseEntity.status(HttpStatus.OK).body("DELETED SUCCESSFULLY");
 
+    }
+
+    @PutMapping("/api/customer/upload/image/{customerId}")
+    public ResponseEntity<?> uploadLogo(@PathVariable int customerId, @RequestParam MultipartFile file) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.uploadLogoSignUp(customerId, file));
     }
 }

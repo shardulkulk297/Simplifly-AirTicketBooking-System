@@ -25,23 +25,37 @@ public class SeatService {
         return seatRepository.save(seat);
     }
 
-
+    /*
+    Entry point from where creation of seats will start
+     */
     public void createSeats(Schedule schedule){
 
         Flight flight = schedule.getFlight();
-
+        /*
+        First class seats will be created first
+         */
         createFirstClassSeats(schedule, flight);
         createBusinessClassSeats(schedule, flight);
         createEconomyClassSeats(schedule, flight);
     }
-
+    /*
+    Helper method for creating first class seats
+     */
     public void createFirstClassSeats(Schedule schedule, Flight flight) {
-        
+        /*
+        First class seats will map 2 seats per row as most planes have 2 first class seats per row
+         */
         int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0); //2 Seats Per Row
         if(flight.getFirstClassSeats()==0){
             return;
         }
-        
+        /*
+        As there will be two seats per row the letters for that will be A & B So it will be like
+        1A, 1B
+         */
+        /*
+        This loop will iterate till no of first class seats and no of first class rows which is 2
+         */
         int seatCount = 0;
         for(int row=1; row<=firstClassRows && seatCount < flight.getFirstClassSeats(); row++){
             for(char seatLetter = 'A'; seatLetter<='B'; seatLetter++){
@@ -58,22 +72,34 @@ public class SeatService {
         }
 
     }
-
+    /*
+    Helper method for creating biz seats
+     */
     private void createBusinessClassSeats(Schedule schedule, Flight flight) {
-
+        /*
+        First the total first class rows are calculated as we are coming from top to bottom so we need to see where the biz class rows will start
+         */
         int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0);
         int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4.0); //4 seats per row
 
-
+        /*
+        If there are no business class seats then we will just return
+         */
         if(flight.getBusinessClassSeats() == 0){
             return;
         }
-
-        
-
+        /*
+        the row creation will start after the no. of first class rows
+         */
         int start = firstClassRows + 1;
+        /*
+        Determining the end
+         */
         int end = start + bizRows - 1;
         int seatCount = 0;
+        /*
+        4 Seats per row so A,B,C,D
+         */
         for(int row = start; row<=end && seatCount<flight.getBusinessClassSeats(); row++){
             for(char seatLetter = 'A'; seatLetter<='D'; seatLetter++){
                 Seat seat = new Seat();
@@ -89,17 +115,27 @@ public class SeatService {
         }
 
     }
-
+    /*
+    Helper method for creating economy seats
+     */
     private void createEconomyClassSeats(Schedule schedule, Flight flight) {
 
-
+        /*
+        Calculating total eco seats
+         */
         int totalSeats = flight.getTotalSeats();
         int firstClassSeats = flight.getFirstClassSeats();
         int businessClassSeats = flight.getBusinessClassSeats();
         int economySeats = totalSeats - (firstClassSeats + businessClassSeats);
 
+        /*
+        Calculating start of the row
+         */
         int firstClassRows = (int) Math.ceil(flight.getFirstClassSeats() / 2.0);
         int bizRows = (int) Math.ceil(flight.getBusinessClassSeats() / 4.0);
+        /*
+        6 seats per row
+         */
         int economyRows = (int) Math.ceil(economySeats / 6.0);
 
         if(economySeats <= 0 ){
@@ -108,7 +144,10 @@ public class SeatService {
 
         int start = firstClassRows + bizRows + 1;
         int end = start + economyRows;
-       
+
+        /*
+        6 seats so letters: A,B,C,D,E,F
+         */
         int seatCount = 0;
         for(int row = start; row<end && seatCount<economySeats; row++){
             for(char seatLetter = 'A'; seatLetter<='F'; seatLetter++){

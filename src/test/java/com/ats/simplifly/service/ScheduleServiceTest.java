@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.ats.simplifly.dto.FlightDto;
+import com.ats.simplifly.dto.FlightOwnerDto;
 import com.ats.simplifly.dto.ScheduleDto;
+import com.ats.simplifly.dto.UserDto;
 import com.ats.simplifly.model.*;
 import com.ats.simplifly.model.enums.Role;
 import com.ats.simplifly.model.enums.VerificationStatus;
@@ -53,7 +56,7 @@ public class ScheduleServiceTest {
         owner.setEmail("owner@skyjet.com");
         owner.setContactPhone("1234567890");
         owner.setVerificationStatus(VerificationStatus.APPROVED);
-        owner.setLogoLink("http://logo.com/image.jpg");
+        owner.setLogoLink("image.jpg");
         owner.setUser(user);
 
         route = new Route();
@@ -76,30 +79,109 @@ public class ScheduleServiceTest {
 
     @Test
     public void getFlightSearchTest() {
+        
         LocalDate date = LocalDate.of(2024, 1, 1);
         LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.plusDays(1).atStartOfDay();
-
+        LocalDateTime end   = date.plusDays(1).atStartOfDay();
         Pageable pageable = PageRequest.of(0, 5);
-        List<Schedule> scheduleList = List.of(schedule);
-        Page<Schedule> page = new PageImpl<>(scheduleList);
+        Page<Schedule> page = new PageImpl<>(List.of(schedule));
 
-        when(scheduleRepository.searchFlight("NYC", "LAX", start, end, pageable)).thenReturn(page);
+        when(scheduleRepository.searchFlight("NYC","LAX", start, end, pageable))
+                .thenReturn(page);
 
-        List<ScheduleDto> result = scheduleService.getFlightSearch("NYC", "LAX", date.toString(), 0, 5);
+        
+        ScheduleDto expected = new ScheduleDto();
+        expected.setId(schedule.getId());
+        expected.setDepartureTime(schedule.getDepartureTime());
+        expected.setArrivalTime(schedule.getArrivalTime());
+        expected.setFare(schedule.getFare());
+        expected.setIsWifiAvailable(schedule.getIsWifiAvailable());
+        expected.setFreeMeal(schedule.getFreeMeal());
+        expected.setMealAvailable(schedule.getMealAvailable());
+        expected.setBusinessClassRate(schedule.getBusinessClassRate());
+        expected.setFirstClassRate(schedule.getFirstClassRate());
 
-        assertEquals(1, result.size());
-        assertEquals(schedule.getId(), result.get(0).getId());
+        
+        FlightDto fDto = new FlightDto();
+        fDto.setId(flight.getId());
+        fDto.setFlightNumber(flight.getFlightNumber());
+        
+
+        
+        FlightOwnerDto oDto = new FlightOwnerDto();
+        oDto.setId(owner.getId());
+        oDto.setCompanyName(owner.getCompanyName());
+        oDto.setEmail(owner.getEmail());
+        oDto.setContactPhone(owner.getContactPhone());
+        oDto.setVerificationStatus(owner.getVerificationStatus());
+        oDto.setLogoLink(owner.getLogoLink());
+        UserDto uDto = new UserDto(user.getId(), user.getUsername(), user.getRole());
+        oDto.setUser(uDto);
+        fDto.setOwner(oDto);
+
+        
+        Route rDto = new Route();
+        rDto.setId(route.getId());
+        rDto.setOrigin(route.getOrigin());
+        rDto.setDestination(route.getDestination());
+        fDto.setRoute(rDto);
+
+        expected.setFlight(fDto);
+
+        
+        List<ScheduleDto> actualList = scheduleService.getFlightSearch("NYC","LAX", date.toString(),0,5);
+
+        
+        assertEquals(1, actualList.size());
+        assertEquals(expected, actualList.get(0));
     }
 
     @Test
     public void getScheduleTest() {
-        when(scheduleRepository.findById(1)).thenReturn(Optional.of(schedule));
+        
+        when(scheduleRepository.findById(1))
+                .thenReturn(Optional.of(schedule));
 
-        ScheduleDto result = scheduleService.getSchedule(1);
+        
+        ScheduleDto expected = new ScheduleDto();
+        expected.setId(schedule.getId());
+        expected.setDepartureTime(schedule.getDepartureTime());
+        expected.setArrivalTime(schedule.getArrivalTime());
+        expected.setFare(schedule.getFare());
+        expected.setIsWifiAvailable(schedule.getIsWifiAvailable());
+        expected.setFreeMeal(schedule.getFreeMeal());
+        expected.setMealAvailable(schedule.getMealAvailable());
+        expected.setBusinessClassRate(schedule.getBusinessClassRate());
+        expected.setFirstClassRate(schedule.getFirstClassRate());
 
-        assertEquals(schedule.getId(), result.getId());
+        FlightDto fDto = new FlightDto();
+        fDto.setId(flight.getId());
+        fDto.setFlightNumber(flight.getFlightNumber());
+        
+        FlightOwnerDto oDto = new FlightOwnerDto();
+        oDto.setId(owner.getId());
+        oDto.setCompanyName(owner.getCompanyName());
+        oDto.setEmail(owner.getEmail());
+        oDto.setContactPhone(owner.getContactPhone());
+        oDto.setVerificationStatus(owner.getVerificationStatus());
+        oDto.setLogoLink(owner.getLogoLink());
+        UserDto uDto = new UserDto(user.getId(), user.getUsername(), user.getRole());
+        oDto.setUser(uDto);
+        fDto.setOwner(oDto);
+        Route rDto = new Route();
+        rDto.setId(route.getId());
+        rDto.setOrigin(route.getOrigin());
+        rDto.setDestination(route.getDestination());
+        fDto.setRoute(rDto);
+        expected.setFlight(fDto);
+
+        
+        ScheduleDto actual = scheduleService.getSchedule(1);
+
+        
+        assertEquals(expected, actual);
     }
+
 
     @Test
     public void getScheduleInvalidIdTest() {

@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/manager/add").permitAll()
                         .requestMatchers("/api/user/getToken").authenticated()
                         .requestMatchers("/api/user/getLoggedInUserDetails").authenticated()
+                        .requestMatchers("/api/customer/upload/image/{customerId}").permitAll()
                         /*
                         FlightOwner API'S
                          */
@@ -78,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/booking/cancel").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/booking/getBookings").hasAuthority("CUSTOMER")
                         .requestMatchers("/api/booking/cancelBooking/{bookingId}").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/booking/getBookingsBySchedule/{scheduleId}").hasAuthority("FLIGHTOWNER")
                          /*
                          DELETE API's
                           */

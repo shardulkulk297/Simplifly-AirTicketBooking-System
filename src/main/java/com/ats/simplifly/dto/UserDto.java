@@ -3,6 +3,8 @@ package com.ats.simplifly.dto;
 
 import com.ats.simplifly.model.enums.Role;
 
+import java.util.Objects;
+
 public class UserDto {
     private int id;
     private String username;
@@ -39,5 +41,16 @@ public class UserDto {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserDto userDto)) return false;
+        return id == userDto.id && Objects.equals(username, userDto.username) && role == userDto.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, role);
     }
 }

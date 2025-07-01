@@ -1,6 +1,8 @@
 package com.ats.simplifly.service;
 
 import com.ats.simplifly.dto.FlightDto;
+import com.ats.simplifly.dto.FlightOwnerDto;
+import com.ats.simplifly.dto.UserDto;
 import com.ats.simplifly.model.Flight;
 import com.ats.simplifly.model.FlightOwner;
 import com.ats.simplifly.model.Route;
@@ -49,7 +51,7 @@ public class FlightServiceTest {
         flightOwner.setCompanyName("AirCorp");
         flightOwner.setEmail("owner@aircorp.com");
         flightOwner.setContactPhone("9876543210");
-        flightOwner.setLogoLink("http://logo.com/logo.png");
+        flightOwner.setLogoLink("logo.png");
         flightOwner.setUser(user);
 
         route = new Route();
@@ -71,21 +73,47 @@ public class FlightServiceTest {
 
     @Test
     public void getAllFlightsTest() {
-        List<Flight> flights = List.of(flight);
+        
+        when(flightOwnerRepository.getByUsername("owner_user"))
+                .thenReturn(flightOwner);
+        when(flightRepository.getAllFlights(flightOwner.getId()))
+                .thenReturn(List.of(flight));
 
-        when(flightOwnerRepository.getByUsername("owner_user")).thenReturn(flightOwner);
-        when(flightRepository.getAllFlights(flightOwner.getId())).thenReturn(flights);
+        
+        FlightDto expected = new FlightDto();
+        expected.setId(flight.getId());
+        expected.setFlightNumber(flight.getFlightNumber());
+        expected.setBaggageCheckin(flight.getBaggageCheckin());
+        expected.setBaggageCabin(flight.getBaggageCabin());
+        expected.setTotalSeats(flight.getTotalSeats());
+        expected.setFirstClassSeats(flight.getFirstClassSeats());
+        expected.setBusinessClassSeats(flight.getBusinessClassSeats());
 
-        List<FlightDto> flightDtoList = flightService.getAllFlights("owner_user");
+        
+        FlightOwnerDto ownerDto = new FlightOwnerDto();
+        ownerDto.setId(flightOwner.getId());
+        ownerDto.setCompanyName(flightOwner.getCompanyName());
+        ownerDto.setEmail(flightOwner.getEmail());
+        ownerDto.setContactPhone(flightOwner.getContactPhone());
+        ownerDto.setVerificationStatus(flightOwner.getVerificationStatus());
+        ownerDto.setLogoLink(flightOwner.getLogoLink());
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setRole(user.getRole());
+        ownerDto.setUser(userDto);
+        expected.setOwner(ownerDto);
 
-        assertEquals(1, flightDtoList.size());
-        FlightDto dto = flightDtoList.get(0);
+        
+        expected.setRoute(route);
 
+        
+        List<FlightDto> actualList = flightService.getAllFlights("owner_user");
 
-        assertEquals(flight.getId(), dto.getId());
-        assertEquals(flight.getFlightNumber(), dto.getFlightNumber());
+        
+        assertEquals(1, actualList.size());
+        assertEquals(expected, actualList.get(0));
     }
-
     @AfterEach
     public void afterTest() {
         flight = null;
